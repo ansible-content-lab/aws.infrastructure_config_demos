@@ -15,6 +15,7 @@ The collection includes a variety of Ansible roles and playbook to help automate
 | cloud.aws_roles.virtual_machine | A role to managed EC2 instances.    |
 
 ### Playbooks
+
 | Name                     | Description                             |
 | ------------------------ | --------------------------------------- |
 | cloud.azure_roles.webapp | A playbook to create a webapp on Azure. |
