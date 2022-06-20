@@ -1,0 +1,23 @@
+---
+namespace: cloud
+name: aws_roles
+version: 1.0.0
+readme: README.md
+authors:
+  - Scott Harwell <sharwell@redhat.com>
+description: AWS use cases in the Ansible Cloud Content Incubation program.
+license:
+  - GPL-3.0-or-later
+license_file: 'LICENSE'
+tags:
+  - 'cloud'
+  - 'aws'
+dependencies: 
+  Amazon.Aws: 3.3.0
+  Amazon.Cloud: 0.1.0
+  Community.Aws: 3.3.0
+repository: https://github.com/Ansible-Incubated-Content/cloud.aws_roles
+documentation: http://docs.example.com
+homepage: https://ansible-incubated-content.github.io/
+issues: https://github.com/Ansible-Incubated-Content/cloud.aws_roles/issues
+build_ignore: []
