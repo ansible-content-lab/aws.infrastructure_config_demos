@@ -1,0 +1,28 @@
+---
+- name: Bootstrap multiple VPC peer network configuration with DMZ and private network
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - cloud.aws_roles
+    - amazon.aws
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - fail:
+        msg: "AWS Region must be defined"
+      when: aws_region is not defined
+
+    - fail:
+        msg: "DMZ SSH key pair name must be defined"
+      when: dmz_ssh_key_name is not defined
+
+    - fail:
+        msg: "Priv Network SSH key pair name must be defined"
+      when: priv_network_ssh_key_name is not defined
+
+    - name: Create Peer Networking Model
+      import_role:
+        name: roles/peer_networking
+      vars:
+        operation: create

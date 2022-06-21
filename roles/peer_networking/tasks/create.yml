@@ -1,0 +1,95 @@
+---
+- name: Create private network VPC
+  amazon.aws.ec2_vpc_net:
+    name: private-network-vpc
+    cidr_block: "{{ vpc_priv_net_cidr }}"
+    region: "{{ aws_region }}"
+    tenancy: "{{ tenancy }}"
+    state: present
+    tags:
+      deployment: ansible
+  register: priv_network_vpc
+
+- name: Create subnet for DMZ network
+  amazon.aws.ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ priv_network_vpc.vpc.id }}"
+    cidr: "{{ vpc_priv_net_subnet1_cidr }}"
+    region: "{{ aws_region }}"
+    tags:
+      deployment: ansible
+  register: priv_network_subnet
+
+- name: Create DMZ VPC
+  amazon.aws.ec2_vpc_net:
+    name: dmz-vpx
+    cidr_block: "{{ vpc_dmz_cdir }}"
+    region: "{{ aws_region }}"
+    state: present
+    tenancy: "{{ tenancy }}"
+    tags:
+      deployment: ansible
+  register: dmz_vpc
+
+- name: Create subnet for DMZ network
+  amazon.aws.ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ dmz_vpc.vpc.id }}"
+    cidr: "{{ vpc_dmz_subnet1_cdir }}"
+    region: "{{ aws_region }}"
+    tags:
+      deployment: ansible
+  register: dmz_subnet
+
+- name: Create Internet Gateway for the DMZ
+  amazon.aws.ec2_vpc_igw:
+    vpc_id: "{{ dmz_vpc.vpc.id }}"
+    region: "{{ aws_region }}"
+    state: present
+    tags:
+      deployment: ansible
+  register: dmz_igw
+
+- name: Create allow SSH security group
+  amazon.aws.ec2_group:
+    name: Allow SSH to DMZ
+    description: Allow inbound SSH traffic to DMZ VPC
+    vpc_id: "{{ dmz_vpc.vpc.id }}"
+    region: "{{ aws_region }}"
+    rules:
+      - proto: tcp
+        ports:
+        - 22
+        cidr_ip: 0.0.0.0/0
+        rule_desc: allow all on port 22
+  register: dmz_sg
+
+- name: Provision an SSH tunnel VM in the DMZ
+  amazon.aws.ec2_instance:
+    count: 1
+    image:
+      id: "{{ dmz_instance_ami }}"
+    instance_type: "{{ dmz_instance_type }}"
+    key_name: "{{ dmz_ssh_key_name }}"
+    name: "{{ dmz_instance_name }}"
+    network:
+      assign_public_ip: true
+      delete_on_termination: true
+    region: "{{ aws_region }}"
+    security_group: "{{ dmz_sg.group_id }}"
+    state: running
+    tags:
+      deployment: ansible
+    tenancy: "{{ tenancy }}"
+    vpc_subnet_id: "{{ dmz_subnet.subnet.id }}"
+    wait: true
+  register: dmz_ec2
+
+- name: Output the IP
+  ansible.builtin.debug:
+    msg: "Public IP for dmz host: {{ dmz_ec2.instances[0].public_ip_address }}"
+
+- name: Set Stats for Controller
+  ansible.builtin.set_stats:
+    data:
+      dmz_public_ip: "{{ dmz_ec2.instances[0].public_ip_address }}"

@@ -1,3 +1,8 @@
 ---
+yaml-files:
+  - '*.yaml'
+  - '*.yml'
+  - '.yamllint'
+
 rules:
   line-length: disable
