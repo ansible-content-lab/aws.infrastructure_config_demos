@@ -10,6 +10,7 @@
     state: present
     tags:
       deployment: ansible
+      ansible-role: peer_networking
   register: priv_network_vpc
 
 - name: Create subnet for DMZ network
@@ -20,6 +21,7 @@
     region: "{{ aws_region }}"
     tags:
       deployment: ansible
+      ansible-role: peer_networking
   register: priv_network_subnet
 
 - name: Create DMZ VPC
@@ -31,6 +33,7 @@
     tenancy: "{{ tenancy }}"
     tags:
       deployment: ansible
+      ansible-role: peer_networking
   register: dmz_vpc
 
 - name: Create subnet for DMZ network
@@ -41,6 +44,7 @@
     region: "{{ aws_region }}"
     tags:
       deployment: ansible
+      ansible-role: peer_networking
   register: dmz_subnet
 
 - name: Create Internet Gateway for the DMZ
@@ -66,6 +70,7 @@
     tags:
       Name: dmz-public-subnet-rt
       deployment: ansible
+      ansible-role: peer_networking
     vpc_id: "{{ dmz_vpc.vpc.id }}"
   register: public_route_table
 
@@ -85,6 +90,8 @@
       - proto: all
         cidr_ip: 0.0.0.0/0
         rule_desc: allow all outbound traffic
+    tags:
+      ansible-role: peer_networking
   register: dmz_sg
 
 - name: Create priv network security group
@@ -109,6 +116,8 @@
         to_port: -1
         cidr_ip: 10.0.0.0/8
         rule_desc: allow all icmp traffic in private networks
+    tags:
+      ansible-role: peer_networking
   register: priv_network_sg
 
 # DMZ SSH Tunnel VM
@@ -156,6 +165,7 @@
     tags:
       deployment: ansible
       purpose: ssh-tunnel
+      ansible-role: peer_networking
     tenancy: "{{ tenancy }}"
     vpc_subnet_id: "{{ dmz_subnet.subnet.id }}"
     wait: true
@@ -218,6 +228,7 @@
     tags:
       deployment: ansible
       purpose: priv-network-vm
+      ansible-role: peer_networking
     tenancy: "{{ tenancy }}"
     vpc_subnet_id: "{{ priv_network_subnet.subnet.id }}"
     wait: true
