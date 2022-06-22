@@ -9,20 +9,23 @@
   vars_files:
     - vars/main.yml
   tasks:
-    - fail:
+    - name: Fail if AWS region not defined
+      ansible.builtin.fail:
         msg: "AWS Region must be defined"
       when: aws_region is not defined
 
-    - fail:
+    - name: Fail if DMZ SSH key not defined
+      ansible.builtin.fail:
         msg: "DMZ SSH key pair name must be defined"
       when: dmz_ssh_key_name is not defined
 
-    - fail:
+    - name: Fail if Private Network SSH key not defined
+      ansible.builtin.fail:
         msg: "Priv Network SSH key pair name must be defined"
       when: priv_network_ssh_key_name is not defined
 
     - name: Create Peer Networking Model
-      import_role:
+      ansible.builtin.import_role:
         name: roles/peer_networking
       vars:
         operation: create
