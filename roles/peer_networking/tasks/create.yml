@@ -64,6 +64,25 @@
         rule_desc: allow all on port 22
   register: dmz_sg
 
+- name: Check if a DMZ SSH tunnel VM is already provisioned
+  amazon.aws.ec2_instance_info:
+    filters:
+      "tag:deployment": ansible
+      "tag:purpose": ssh-tunnel
+    region: "{{ aws_region }}"
+  register: existing_instance
+
+- name: Output the IP of existing VM
+  ansible.builtin.debug:
+    msg: "Public IP for dmz host: {{ existing_instance.instances[0].public_ip_address }}"
+  when: existing_instance.instances is defined and existing_instance.instances | length > 0
+
+- name: Set stats for Controller of existing VM
+  ansible.builtin.set_stats:
+    data:
+      dmz_public_ip: "{{ existing_instance.instances[0].public_ip_address }}"
+  when: existing_instance.instances is defined and existing_instance.instances | length > 0
+
 - name: Provision an SSH tunnel VM in the DMZ
   amazon.aws.ec2_instance:
     count: 1
@@ -80,16 +99,20 @@
     state: running
     tags:
       deployment: ansible
+      purpose: ssh-tunnel
     tenancy: "{{ tenancy }}"
     vpc_subnet_id: "{{ dmz_subnet.subnet.id }}"
     wait: true
   register: dmz_ec2
+  when: existing_instance.instances is defined and existing_instance.instances | length == 0
 
-- name: Output the IP
+- name: Output the IP of new VM
   ansible.builtin.debug:
     msg: "Public IP for dmz host: {{ dmz_ec2.instances[0].public_ip_address }}"
+  when: dmz_ec2 is defined and dmz_ec2.instances is defined and dmz_ec2.instances | length > 0
 
-- name: Set Stats for Controller
+- name: Set stats for Controller of new VM
   ansible.builtin.set_stats:
     data:
       dmz_public_ip: "{{ dmz_ec2.instances[0].public_ip_address }}"
+  when: dmz_ec2 is defined and dmz_ec2.instances is defined and dmz_ec2.instances | length > 0
