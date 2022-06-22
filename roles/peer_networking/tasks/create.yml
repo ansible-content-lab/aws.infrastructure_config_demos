@@ -13,7 +13,7 @@
       ansible-role: peer_networking
   register: priv_network_vpc
 
-- name: Create subnet for DMZ network
+- name: Create subnet for private network
   amazon.aws.ec2_vpc_subnet:
     state: present
     vpc_id: "{{ priv_network_vpc.vpc.id }}"
@@ -56,24 +56,6 @@
       deployment: ansible
   register: dmz_igw
 
-- name: Set up public subnet route table in DMZ
-  amazon.aws.ec2_vpc_route_table:
-    region: "{{ aws_region }}"
-    routes:
-      - dest: 0.0.0.0/0
-        gateway_id: "{{ dmz_igw.gateway_id }}"
-      - dest: ::/0
-        gateway_id: "{{ dmz_igw.gateway_id }}"
-    subnets:
-      - "{{ dmz_subnet.subnet.id }}"
-    state: present
-    tags:
-      Name: dmz-public-subnet-rt
-      deployment: ansible
-      ansible-role: peer_networking
-    vpc_id: "{{ dmz_vpc.vpc.id }}"
-  register: public_route_table
-
 - name: Create DMZ allow SSH security group
   amazon.aws.ec2_group:
     name: dmz-sg
@@ -91,6 +73,7 @@
         cidr_ip: 0.0.0.0/0
         rule_desc: allow all outbound traffic
     tags:
+      deployment: ansible
       ansible-role: peer_networking
   register: dmz_sg
 
@@ -117,8 +100,68 @@
         cidr_ip: 10.0.0.0/8
         rule_desc: allow all icmp traffic in private networks
     tags:
+      deployment: ansible
       ansible-role: peer_networking
   register: priv_network_sg
+
+# Peer DMZ and Private Networks
+
+- name: Peer DMZ and Private Networks
+  community.aws.ec2_vpc_peer:
+    region: "{{ aws_region }}"
+    vpc_id: "{{ priv_network_vpc.vpc.id }}"
+    peer_vpc_id: "{{ dmz_vpc.vpc.id }}"
+    state: present
+    tags:
+      Name: Private Network and DMZ Peering
+      deployment: ansible
+      ansible-role: peer_networking
+  register: vpc_peer
+
+- name: Accept local VPC peering request
+  community.aws.ec2_vpc_peer:
+    region: "{{ aws_region }}"
+    peering_id: "{{ vpc_peer.peering_id }}"
+    state: accept
+  register: action_peer
+
+# Configure Route Tables
+
+- name: Setup private network route table
+  amazon.aws.ec2_vpc_route_table:
+    region: "{{ aws_region }}"
+    routes:
+      - dest: "{{ dmz_vpc.vpc.cidr_block }}"
+        vpc_peering_connection_id: "{{ vpc_peer.peering_id }}"
+    subnets:
+      - "{{ priv_network_subnet.subnet.id }}"
+    state: present
+    tags:
+      Name: priv-net-rt
+      deployment: ansible
+      ansible-role: peer_networking
+    vpc_id: "{{ priv_network_vpc.vpc.id }}"
+  register: priv_net_rt
+
+- name: Set up DMZ route table
+  amazon.aws.ec2_vpc_route_table:
+    region: "{{ aws_region }}"
+    routes:
+      - dest: "{{ priv_network_vpc.vpc.cidr_block }}"
+        vpc_peering_connection_id: "{{ vpc_peer.peering_id }}"
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ dmz_igw.gateway_id }}"
+      - dest: ::/0
+        gateway_id: "{{ dmz_igw.gateway_id }}"
+    subnets:
+      - "{{ dmz_subnet.subnet.id }}"
+    state: present
+    tags:
+      Name: dmz-rt
+      deployment: ansible
+      ansible-role: peer_networking
+    vpc_id: "{{ dmz_vpc.vpc.id }}"
+  register: dmz_rt
 
 # DMZ SSH Tunnel VM
 
