@@ -16,6 +16,6 @@
 
     - name: Delete Peer Networking Model
       ansible.builtin.import_role:
-        name: roles/peer_networking
+        name: roles/deploy_peered_networks
       vars:
         operation: delete
