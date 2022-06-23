@@ -191,6 +191,7 @@
     filters:
       "tag:deployment": ansible
       "tag:purpose": ssh-tunnel
+      "tag:ansible-role": peer_networking
       instance-state-name: 
         - pending
         - running
@@ -254,6 +255,7 @@
     filters:
       "tag:deployment": ansible
       "tag:purpose": priv-network-vm
+      "tag:ansible-role": peer_networking
       instance-state-name: 
         - pending
         - running
