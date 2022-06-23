@@ -97,10 +97,6 @@
     region: "{{ aws_region }}"
   register: security_groups
 
-- name: Debug Security Groups
-  ansible.builtin.debug:
-    var: security_groups
-
 - name: Delete Security Groups
   amazon.aws.ec2_group:
     group_id: "{{ item.group_id }}"
@@ -118,10 +114,6 @@
       "tag:ansible-role": peer_networking
     region: "{{ aws_region }}"
   register: peer_networking_vpcs
-
-- name: Debug VPCs
-  ansible.builtin.debug:
-    var: peer_networking_vpcs
 
 - name: Delete VPCs
   amazon.aws.ec2_vpc_net:
