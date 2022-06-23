@@ -154,8 +154,8 @@
   amazon.aws.ec2_vpc_route_table:
     region: "{{ aws_region }}"
     routes:
-      - dest: 0.0.0.0/0
-        gateway_id: "{{ priv_net_igw.gateway_id }}"
+      - dest: "{{ dmz_vpc.vpc.cidr_block }}"
+        vpc_peering_connection_id: "{{ vpc_peer.peering_id }}"
     subnets:
       - "{{ priv_network_subnet.subnet.id }}"
     state: present
