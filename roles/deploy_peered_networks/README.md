@@ -14,7 +14,6 @@ The following variables are used during deployment and can be configured as extr
 
 ```yaml
 ---
-aws_profile: default
 aws_region: us-east-1
 ```
 

@@ -10,7 +10,7 @@
     state: present
     tags:
       deployment: ansible
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
   register: priv_network_vpc
 
 - name: Create subnet for private network
@@ -22,7 +22,7 @@
     tags:
       Name: priv-net-subnet
       deployment: ansible
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
   register: priv_network_subnet
 
 - name: Create DMZ VPC
@@ -34,7 +34,7 @@
     tenancy: "{{ tenancy }}"
     tags:
       deployment: ansible
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
   register: dmz_vpc
 
 - name: Create subnet for DMZ network
@@ -46,7 +46,7 @@
     tags:
       Name: dmz-subnet
       deployment: ansible
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
   register: dmz_subnet
 
 - name: Create Internet Gateway for the DMZ
@@ -57,13 +57,13 @@
     tags:
       Name: dmz-ig
       deployment: ansible
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
   register: dmz_igw
 
 - name: Create DMZ allow SSH security group
   amazon.aws.ec2_group:
     name: dmz-sg
-    description: DMZ inbound traffic
+    description: DMZ VPC security group
     vpc_id: "{{ dmz_vpc.vpc.id }}"
     region: "{{ aws_region }}"
     rules:
@@ -93,13 +93,13 @@
         rule_desc: allow all outbound traffic
     tags:
       deployment: ansible
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
   register: dmz_sg
 
 - name: Create priv network security group
   amazon.aws.ec2_group:
     name: private-network-sg
-    description: Allow internal network traffic
+    description: Private network security group
     vpc_id: "{{ priv_network_vpc.vpc.id }}"
     region: "{{ aws_region }}"
     rules:
@@ -124,7 +124,7 @@
         rule_desc: allow all outbound traffic
     tags:
       deployment: ansible
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
   register: priv_network_sg
 
 # Peer DMZ and Private Networks
@@ -136,9 +136,9 @@
     peer_vpc_id: "{{ dmz_vpc.vpc.id }}"
     state: present
     tags:
-      Name: Private Network and DMZ Peering
+      Name: "{{ priv_network_vpc.vpc.id }}-{{ dmz_vpc.vpc.id }}-peering"
       deployment: ansible
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
   register: vpc_peer
 
 - name: Accept local VPC peering request
@@ -162,7 +162,7 @@
     tags:
       Name: priv-net-rt
       deployment: ansible
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
     vpc_id: "{{ priv_network_vpc.vpc.id }}"
   register: priv_net_rt
 
@@ -180,7 +180,7 @@
     tags:
       Name: dmz-rt
       deployment: ansible
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
     vpc_id: "{{ dmz_vpc.vpc.id }}"
   register: dmz_rt
 
@@ -230,7 +230,7 @@
     tags:
       deployment: ansible
       purpose: ssh-tunnel
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
     tenancy: "{{ tenancy }}"
     vpc_subnet_id: "{{ dmz_subnet.subnet.id }}"
     wait: true
@@ -294,7 +294,7 @@
     tags:
       deployment: ansible
       purpose: priv-network-vm
-      ansible-role: peer_networking
+      ansible-role: deploy_peered_networks
     tenancy: "{{ tenancy }}"
     vpc_subnet_id: "{{ priv_network_subnet.subnet.id }}"
     wait: true

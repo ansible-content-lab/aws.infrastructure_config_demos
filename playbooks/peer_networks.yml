@@ -1,0 +1,46 @@
+---
+- name: Peer multiple networks using VPC peering
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - cloud.aws_roles
+    - amazon.aws
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: Fail if AWS region not defined
+      ansible.builtin.fail:
+        msg: "AWS Region must be defined"
+      when: aws_region is not defined
+
+    # Create a new VPC to peer to existing network(s)
+
+    - name: Create private network VPC
+      amazon.aws.ec2_vpc_net:
+        name: "{{ vpc.name }}"
+        cidr_block: "{{ vpc.cidr_block }}"
+        region: "{{ aws_region }}"
+        tenancy: "{{ tenancy | default('default') }}"
+        state: present
+        tags:
+          deployment: ansible
+          ansible-role: peer_existing_networks
+      register: vpc_results
+
+    - name: Create subnet for private network
+      amazon.aws.ec2_vpc_subnet:
+        state: present
+        vpc_id: "{{ vpc_results.vpc.id }}"
+        cidr: "{{ item.cidr_block }}"
+        region: "{{ aws_region }}"
+        tags:
+          Name: "{{ item.name }}"
+          deployment: ansible
+          ansible-role: peer_existing_networks
+      register: subnet_results
+      loop: vpc.subnets
+
+    - name: Create Peer Networking Model
+      ansible.builtin.import_role:
+        name: roles/peer_existing_networks
