@@ -9,16 +9,16 @@ The collection includes a variety of Ansible roles and playbook to help automate
 <!--start collection content-->
 ### Roles
 
-| Name                            | Description                         |
-| ------------------------------- | ----------------------------------- |
-| cloud.aws_roles.networking      | A role to manage VPC configuration. |
-| cloud.aws_roles.virtual_machine | A role to managed EC2 instances.    |
+| Name                                                                                                                 | Description                                                                              |
+| -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [cloud.aws_roles.networking](https://github.com/ansible-content-lab/cloud.aws_roles/roles/peer_networking/README.md) | A role to configure VPC templates that include peer networking DMZ and private networks. |
 
 ### Playbooks
 
-| Name                     | Description                             |
-| ------------------------ | --------------------------------------- |
-| cloud.azure_roles.webapp | A playbook to create a webapp on Azure. |
+| Name                                | Description                                                                                |
+| ----------------------------------- | ------------------------------------------------------------------------------------------ |
+| cloud.aws_roles.create_peer_network | A playbook to create a multi-VPC peer network configuration with DMZ and private networks. |
+| cloud.aws_roles.delete_peer_network | Deletes AWS resources created in the `create_peer_network` playbook.                       |
 <!--end collection content-->
 
 ## Installation and Usage
@@ -34,7 +34,7 @@ You can also include it in a `requirements.yml` file and install it via `ansible
 ```yaml
 ---
 collections:
-  - name: [cloud.aws_roles](https://github.com/Ansible-Incubated-Content/cloud.aws_roles.git)
+  - name: [cloud.aws_roles](https://github.com/ansible-content-lab/cloud.aws_roles)
     type: git
     version: main
 ```
