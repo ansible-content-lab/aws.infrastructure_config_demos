@@ -41,4 +41,4 @@ The following AWS infrastructure resources are created during this deployment.  
 
 ### Architecture Diagram
 
-<div style="width: 960px; height: 720px; margin: 10px; position: relative;"><iframe allowfullscreen frameborder="0" style="width:960px; height:720px" src="https://lucid.app/documents/embedded/f084923f-8bdd-4bf1-85b1-b34c3a585533" id="jvcsbYyWj.cH"></iframe></div>
+![Deployment Architecture Diagram](./files/peer_network_arch_diagram.png)
