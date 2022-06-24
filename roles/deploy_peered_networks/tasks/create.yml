@@ -186,7 +186,23 @@
 
 # Configure Route Tables
 
-- name: Setup private network route table
+- name: Setup private network public subnet route table
+  amazon.aws.ec2_vpc_route_table:
+    region: "{{ aws_region }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ priv_network_igw.nat_gateway_id }}"
+    subnets:
+      - "{{ priv_network_public_subnet.subnet.id }}"
+    state: present
+    tags:
+      Name: priv-net-rt
+      deployment: ansible
+      ansible-role: deploy_peered_networks
+    vpc_id: "{{ priv_network_vpc.vpc.id }}"
+  register: priv_net_pub_subnet_rt
+
+- name: Setup private network private subnet route table
   amazon.aws.ec2_vpc_route_table:
     region: "{{ aws_region }}"
     routes:
@@ -202,7 +218,7 @@
       deployment: ansible
       ansible-role: deploy_peered_networks
     vpc_id: "{{ priv_network_vpc.vpc.id }}"
-  register: priv_net_rt
+  register: priv_net_priv_subnet_rt
 
 - name: Set up DMZ route table
   amazon.aws.ec2_vpc_route_table:
