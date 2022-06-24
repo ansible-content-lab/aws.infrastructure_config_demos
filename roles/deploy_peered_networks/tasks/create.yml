@@ -196,7 +196,7 @@
       - "{{ priv_network_public_subnet.subnet.id }}"
     state: present
     tags:
-      Name: priv-net-rt
+      Name: priv-net-pub-subnet-rt
       deployment: ansible
       ansible-role: deploy_peered_networks
     vpc_id: "{{ priv_network_vpc.vpc.id }}"
@@ -214,7 +214,7 @@
       - "{{ priv_network_priv_subnet.subnet.id }}"
     state: present
     tags:
-      Name: priv-net-rt
+      Name: priv-net-priv-subnet-rt
       deployment: ansible
       ansible-role: deploy_peered_networks
     vpc_id: "{{ priv_network_vpc.vpc.id }}"
