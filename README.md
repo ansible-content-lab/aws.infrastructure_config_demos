@@ -9,6 +9,8 @@ The collection includes a variety of Ansible roles and playbook to help automate
 <!--start collection content-->
 ### Roles
 
+Click on the role name to be directed to the README specifically for that role.
+
 | Name                                                                                                                                              | Description                                                                                            |
 | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | [cloud.aws_roles.deploy_peered_networks](https://github.com/ansible-content-lab/cloud.aws_roles/blob/main/roles/deploy_peered_networks/README.md) | A role to create a VPC networking architecture that includes peer networking DMZ and private networks. |
