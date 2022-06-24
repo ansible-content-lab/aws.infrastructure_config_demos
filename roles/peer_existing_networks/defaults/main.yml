@@ -1,2 +1,4 @@
 ---
 tenancy: default
+security:
+  type: all
