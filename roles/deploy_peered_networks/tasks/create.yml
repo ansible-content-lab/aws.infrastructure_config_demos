@@ -13,17 +13,53 @@
       ansible-role: deploy_peered_networks
   register: priv_network_vpc
 
-- name: Create subnet for private network
+- name: Create private subnet for private network
   amazon.aws.ec2_vpc_subnet:
     state: present
     vpc_id: "{{ priv_network_vpc.vpc.id }}"
-    cidr: "{{ vpc_priv_net_subnet1_cidr }}"
+    cidr: "{{ vpc_priv_net_priv_subnet_cidr }}"
     region: "{{ aws_region }}"
     tags:
       Name: priv-net-subnet
       deployment: ansible
       ansible-role: deploy_peered_networks
-  register: priv_network_subnet
+  register: priv_network_priv_subnet
+
+- name: Create public subnet for private network natgw
+  amazon.aws.ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ priv_network_vpc.vpc.id }}"
+    cidr: "{{ vpc_priv_net_priv_subnet_cidr }}"
+    region: "{{ aws_region }}"
+    tags:
+      Name: priv-net-subnet
+      deployment: ansible
+      ansible-role: deploy_peered_networks
+  register: priv_network_public_subnet
+
+- name: Create Internet Gateway for private network (to connect NAT gateway)
+  amazon.aws.ec2_vpc_igw:
+    vpc_id: "{{ priv_network_vpc.vpc.id }}"
+    region: "{{ aws_region }}"
+    state: present
+    tags:
+      Name: priv-network-ig
+      deployment: ansible
+      ansible-role: deploy_peered_networks
+  register: priv_network_igw
+
+- name: Create new nat gateway and allocate new EIP if a nat gateway does not yet exist in the subnet.
+  amazon.aws.ec2_vpc_nat_gateway:
+    state: present
+    subnet_id: "{{ priv_network_public_subnet.subnet.id}}"
+    wait: true
+    region: "{{ aws_region }}"
+    if_exist_do_not_create: true
+    tags:
+      Name: priv-network-nat-gw
+      deployment: ansible
+      ansible-role: deploy_peered_networks
+  register: priv_network_nat_gateway
 
 - name: Create DMZ VPC
   amazon.aws.ec2_vpc_net:
@@ -156,8 +192,10 @@
     routes:
       - dest: "{{ dmz_vpc.vpc.cidr_block }}"
         vpc_peering_connection_id: "{{ vpc_peer.peering_id }}"
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ priv_network_nat_gateway.nat_gateway_id }}"
     subnets:
-      - "{{ priv_network_subnet.subnet.id }}"
+      - "{{ priv_network_priv_subnet.subnet.id }}"
     state: present
     tags:
       Name: priv-net-rt
@@ -191,7 +229,7 @@
     filters:
       "tag:deployment": ansible
       "tag:purpose": ssh-tunnel
-      "tag:ansible-role": peer_networking
+      "tag:ansible-role": deploy_peered_networks
       instance-state-name: 
         - pending
         - running
@@ -255,7 +293,7 @@
     filters:
       "tag:deployment": ansible
       "tag:purpose": priv-network-vm
-      "tag:ansible-role": peer_networking
+      "tag:ansible-role": deploy_peered_networks
       instance-state-name: 
         - pending
         - running
@@ -296,7 +334,7 @@
       purpose: priv-network-vm
       ansible-role: deploy_peered_networks
     tenancy: "{{ tenancy }}"
-    vpc_subnet_id: "{{ priv_network_subnet.subnet.id }}"
+    vpc_subnet_id: "{{ priv_network_priv_subnet.subnet.id }}"
     wait: true
   register: priv_network_ec2
   when: existing_priv_network_instance.instances is defined and existing_priv_network_instance.instances | length == 0

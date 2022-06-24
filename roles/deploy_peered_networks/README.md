@@ -23,7 +23,7 @@ aws_region: us-east-1
 ---
 tenancy: default
 vpc_priv_net_cidr: 10.0.0.0/16
-vpc_priv_net_subnet1_cidr: 10.0.0.0/24
+vpc_priv_net_priv_subnet_cidr: 10.0.0.0/24
 vpc_dmz_cidr: 10.1.0.0/16
 vpc_dmz_subnet1_cidr: 10.1.0.0/24
 dmz_instance_type: t2.micro
