@@ -4,11 +4,11 @@
 - name: Peer DMZ and Private Networks
   community.aws.ec2_vpc_peer:
     region: "{{ aws_region }}"
-    vpc_id: "{{ item.vpc_id }}"
-    peer_vpc_id: "{{ item.peer_vpc_id }}"
+    vpc_id: "{{ source_vpc.vpc_id }}"
+    peer_vpc_id: "{{ item }}"
     state: present
     tags:
-      Name: "{{ item.vpc_id }}-{{ item.peer_vpc_id }}-peering"
+      Name: "{{ source_vpc.vpc_id }}-{{ item }}-peering"
       deployment: ansible
       ansible-role: peer_existing_networks
   register: peer_connections
@@ -26,120 +26,107 @@
   tags:
     - peer
 
-# Get VPC Info
+# Create Security Group
 
-- name: Get VPC details
-  amazon.aws.ec2_vpc_net_info:
-    region: "{{ aws_region }}"
-    vpc_ids: "{{ security.security_groups | map(attribute='vpc_id') }}"
-  register: vpcs
-  tags:
-    - vpcs
-
-- name: Debug VPCs
-  debug:
-    var: vpcs
-  tags:
-    - vpcs
-
-- name: Debug VPC mapping
-  debug:
-    var: (vpcs.vpcs | selectattr('id', '==', item.vpc_id) | first).id
-  loop: "{{ security.security_groups }}"
-  tags:
-    - vpcs
-
-# Update Security Groups
-
-- name: Update security groups with all permissions
+- name: Create security group with all permissions
   amazon.aws.ec2_group:
-    name: "{{ item.name }}"
-    description: "{{ item.description }}"
-    vpc_id: "{{ (vpcs.vpcs | selectattr('id', '==', item.vpc_id) | first).id }}"
+    name: "{{ source_vpc.vpc_id  }}-sg"
+    description: Security group created by peer network automation
+    vpc_id: "{{ source_vpc.vpc_id }}"
     region: "{{ aws_region }}"
     rules:
       - proto: tcp
-        cidr_ip: 10.0.0.0/8
+        cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
         from_port: 0
         to_port: 65535
         rule_desc: allow all local network tcp traffic
       - proto: udp
-        cidr_ip: 10.0.0.0/8
+        cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
         from_port: 0
         to_port: 65535
         rule_desc: allow all local network udp traffic
       - proto: icmp
-        cidr_ip: 10.0.0.0/8
+        cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
         from_port: -1
         to_port: -1
         rule_desc: allow all local network icmp traffic
     rules_egress:
       - proto: all
-        cidr_ip: 0.0.0.0/0
+        cidr_ip: "{{ security.security_group_engress_cidr_block }}"
         rule_desc: allow all outbound traffic
-  loop: "{{ security.security_groups }}"
+    tags:
+      Name: "{{ source_vpc.vpc_id  }}-sg"
+      deployment: ansible
+      ansible-role: peer_existing_networks
   when: security.type == 'all'
   tags:
     - sg
 
-- name: Update security groups with icmp permissions
+- name: Create security group with icmp permissions
   amazon.aws.ec2_group:
-    name: "{{ item.name }}"
-    description: "{{ item.description }}"
-    vpc_id: "{{ (vpcs.vpcs | selectattr('id', '==', item.vpc_id) | first).id }}"
+    name: "{{ source_vpc.vpc_id  }}-sg"
+    description: Security group created by peer network automation
+    vpc_id: "{{ source_vpc.vpc_id }}"
     region: "{{ aws_region }}"
     rules:
-      - proto: tcp
-        cidr_ip: 10.0.0.0/8
-        from_port: 0
-        to_port: 65535
-        rule_desc: allow all local network tcp traffic
-      - proto: udp
-        cidr_ip: 10.0.0.0/8
-        from_port: 0
-        to_port: 65535
-        rule_desc: allow all local network udp traffic
       - proto: icmp
-        cidr_ip: 10.0.0.0/8
+        cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
         from_port: -1
         to_port: -1
         rule_desc: allow all local network icmp traffic
     rules_egress:
       - proto: all
-        cidr_ip: 0.0.0.0/0
+        cidr_ip: "{{ security.security_group_engress_cidr_block }}"
         rule_desc: allow all outbound traffic
-  loop: "{{ security.security_groups }}"
+    tags:
+      Name: "{{ source_vpc.vpc_id  }}-sg"
+      deployment: ansible
+      ansible-role: peer_existing_networks
   when: security.type == 'icmp'
   tags:
     - sg
 
-- name: Update security groups with ssh permissions
+- name: Create security group with ssh permissions
   amazon.aws.ec2_group:
-    name: "{{ item.name }}"
-    description: "{{ item.description }}"
-    vpc_id: "{{ (vpcs.vpcs | selectattr('id', '==', item.vpc_id) | first).id }}"
+    name: "{{ source_vpc.vpc_id  }}-sg"
+    description: Security group created by peer network automation
+    vpc_id: "{{ source_vpc.vpc_id }}"
     region: "{{ aws_region }}"
     rules:
       - proto: tcp
-        cidr_ip: 10.0.0.0/8
-        from_port: 0
-        to_port: 65535
-        rule_desc: allow all local network tcp traffic
-      - proto: udp
-        cidr_ip: 10.0.0.0/8
-        from_port: 0
-        to_port: 65535
-        rule_desc: allow all local network udp traffic
-      - proto: icmp
-        cidr_ip: 10.0.0.0/8
-        from_port: -1
-        to_port: -1
-        rule_desc: allow all local network icmp traffic
+        cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
+        ports:
+          - 22
+        rule_desc: allow all local network ssh traffic
     rules_egress:
       - proto: all
-        cidr_ip: 0.0.0.0/0
+        cidr_ip: "{{ security.security_group_engress_cidr_block }}"
         rule_desc: allow all outbound traffic
-  loop: "{{ security.security_groups }}"
-  when: security.type == 'ssh'
+    tags:
+      Name: "{{ source_vpc.vpc_id  }}-sg"
+      deployment: ansible
+      ansible-role: peer_existing_networks
+  when: security.type == 'icmp'
   tags:
     - sg
+
+# Update Route Table
+
+- name: Create routes
+  vars:
+    route:
+      dest: "{{ item.vpc_peering_connection.accepter_vpc_info.cidr_block }}"
+      vpc_peering_connection_id: "{{ item.peering_id }}"
+  ansible.builtin.set_fact:
+    routes: "{{ routes | default([]) + [route] }}"
+  loop: "{{ peer_connections.results }}"
+  no_log: true
+
+- name: Update route tables with new routes
+  amazon.aws.ec2_vpc_route_table:
+    lookup: id
+    region: "{{ aws_region }}"
+    route_table_id: "{{ item }}"
+    routes: "{{ routes | list }}"
+    vpc_id: "{{ source_vpc.vpc_id }}"
+  loop: "{{ route_tables }}"
