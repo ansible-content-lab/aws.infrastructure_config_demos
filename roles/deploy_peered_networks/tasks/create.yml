@@ -128,6 +128,7 @@
         cidr_ip: 0.0.0.0/0
         rule_desc: allow all outbound traffic
     tags:
+      Name: dmz-sg
       deployment: ansible
       ansible-role: deploy_peered_networks
   register: dmz_sg
@@ -159,6 +160,7 @@
         cidr_ip: 0.0.0.0/0
         rule_desc: allow all outbound traffic
     tags:
+      Name: private-network-sg
       deployment: ansible
       ansible-role: deploy_peered_networks
   register: priv_network_sg
