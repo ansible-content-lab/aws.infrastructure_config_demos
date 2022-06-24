@@ -191,7 +191,7 @@
     region: "{{ aws_region }}"
     routes:
       - dest: 0.0.0.0/0
-        gateway_id: "{{ priv_network_igw.nat_gateway_id }}"
+        gateway_id: "{{ priv_network_igw.gateway_id }}"
     subnets:
       - "{{ priv_network_public_subnet.subnet.id }}"
     state: present
@@ -240,7 +240,7 @@
 
 # DMZ SSH Tunnel VM
 
-- name: Check if a DMZ SSH tunnel VM is already provisioned
+- name: Check if a DMZ bastion VM is already provisioned
   amazon.aws.ec2_instance_info:
     filters:
       "tag:deployment": ansible
