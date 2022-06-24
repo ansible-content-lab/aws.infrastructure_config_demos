@@ -20,7 +20,7 @@ The collection includes a variety of Ansible roles and playbook to help automate
 | ------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------ |
 | `cloud.aws_roles.create_peer_network` | `roles.deploy_peered_networks` | A playbook to create a multi-VPC peer network configuration with DMZ and private networks. |
 | `cloud.aws_roles.delete_peer_network` | `roles.deploy_peered_networks` | Deletes AWS resources created in the `create_peer_network` playbook.                       |
-| cloud.aws_roles.peer_networks         | `roles.peer_networks`          | Peer two or more VPCs.                                                                     |
+| `cloud.aws_roles.peer_networks`       | `roles.peer_networks`          | Peer two or more VPCs.                                                                     |
 <!--end collection content-->
 
 ## Installation and Usage
