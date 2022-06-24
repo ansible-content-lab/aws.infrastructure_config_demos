@@ -13,9 +13,9 @@ tags:
   - 'cloud'
   - 'aws'
 dependencies: 
-  Amazon.Aws: 3.3.0
+  Amazon.Aws: 4.0.0
   Amazon.Cloud: 0.1.0
-  Community.Aws: 3.3.0
+  Community.Aws: 4.0.0
 repository: https://github.com/Ansible-Incubated-Content/cloud.aws_roles
 documentation: http://docs.example.com
 homepage: https://ansible-incubated-content.github.io/
