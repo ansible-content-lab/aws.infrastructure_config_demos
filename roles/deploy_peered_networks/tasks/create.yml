@@ -20,7 +20,7 @@
     cidr: "{{ vpc_priv_net_priv_subnet_cidr }}"
     region: "{{ aws_region }}"
     tags:
-      Name: priv-net-subnet
+      Name: priv-net-private-subnet
       deployment: ansible
       ansible-role: deploy_peered_networks
   register: priv_network_priv_subnet
@@ -29,10 +29,10 @@
   amazon.aws.ec2_vpc_subnet:
     state: present
     vpc_id: "{{ priv_network_vpc.vpc.id }}"
-    cidr: "{{ vpc_priv_net_priv_subnet_cidr }}"
+    cidr: "{{ vpc_priv_net_public_subnet_cidr }}"
     region: "{{ aws_region }}"
     tags:
-      Name: priv-net-subnet
+      Name: priv-net-public-subnet
       deployment: ansible
       ansible-role: deploy_peered_networks
   register: priv_network_public_subnet
@@ -48,7 +48,7 @@
       ansible-role: deploy_peered_networks
   register: priv_network_igw
 
-- name: Create new nat gateway and allocate new EIP if a nat gateway does not yet exist in the subnet.
+- name: Create NAT gateway and allocate EIP if a nat gateway does not yet exist in the subnet
   amazon.aws.ec2_vpc_nat_gateway:
     state: present
     subnet_id: "{{ priv_network_public_subnet.subnet.id}}"
