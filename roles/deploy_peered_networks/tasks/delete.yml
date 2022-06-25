@@ -1,5 +1,4 @@
 ---
-
 # Delete EC2 Instances
 
 - name: Delete instances
@@ -17,7 +16,7 @@
     filters:
       "tag:deployment": ansible
       "tag:ansible-role": deploy_peered_networks
-      status-code: 
+      status-code:
         - active
     region: "{{ aws_region }}"
   register: vpc_peers

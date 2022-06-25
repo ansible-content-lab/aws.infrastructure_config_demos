@@ -1,6 +1,6 @@
 ---
 - name: Check operation validation
-  fail:
+  ansible.builtin.fail:
     msg: "Please provide operation as 'create' or 'delete'"
   when: operation not in ['create', 'delete']
 

@@ -8,11 +8,11 @@ authors:
 description: AWS use cases in the Ansible Cloud Content Incubation program.
 license:
   - GPL-3.0-or-later
-license_file: 'LICENSE'
+license_file: "LICENSE"
 tags:
-  - 'cloud'
-  - 'aws'
-dependencies: 
+  - "cloud"
+  - "aws"
+dependencies:
   Amazon.Aws: 4.0.0
   Amazon.Cloud: 0.1.0
   Community.Aws: 4.0.0
