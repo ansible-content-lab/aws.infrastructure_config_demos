@@ -1,3 +1,5 @@
+[![Validation CI](https://github.com/ansible-content-lab/cloud.aws_roles/actions/workflows/validate.yml/badge.svg)](https://github.com/ansible-content-lab/cloud.aws_roles/actions/workflows/validate.yml)
+
 # Ansible Collection - cloud.aws_roles
 
 This repository hosts the `cloud.aws_roles` Ansible Collection.
