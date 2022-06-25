@@ -51,7 +51,7 @@
 - name: Create NAT gateway and allocate EIP if a nat gateway does not yet exist in the subnet
   amazon.aws.ec2_vpc_nat_gateway:
     state: present
-    subnet_id: "{{ priv_network_public_subnet.subnet.id}}"
+    subnet_id: "{{ priv_network_public_subnet.subnet.id }}"
     wait: true
     region: "{{ aws_region }}"
     if_exist_do_not_create: true
@@ -248,7 +248,7 @@
       "tag:deployment": ansible
       "tag:purpose": ssh-tunnel
       "tag:ansible-role": deploy_peered_networks
-      instance-state-name: 
+      instance-state-name:
         - pending
         - running
         - shutting-down
@@ -280,7 +280,7 @@
       assign_public_ip: true
       delete_on_termination: true
     region: "{{ aws_region }}"
-    security_groups: 
+    security_groups:
       - "{{ dmz_sg.group_id }}"
     state: running
     tags:
@@ -312,7 +312,7 @@
       "tag:deployment": ansible
       "tag:purpose": priv-network-vm
       "tag:ansible-role": deploy_peered_networks
-      instance-state-name: 
+      instance-state-name:
         - pending
         - running
         - shutting-down
@@ -344,7 +344,7 @@
       assign_public_ip: false
       delete_on_termination: true
     region: "{{ aws_region }}"
-    security_groups: 
+    security_groups:
       - "{{ priv_network_sg.group_id }}"
     state: running
     tags:
