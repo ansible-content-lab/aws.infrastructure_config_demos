@@ -45,6 +45,10 @@ collections:
     version: main
 ```
 
+### Adding a Git Pre-Commit Hook
+
+This repo includes a configuration file for `ansible-lint` to be run as a git [pre-commit](https://pre-commit.com/) hook. To install the hook, run `pre-commit install` from the root directory of this repo once you have the pre-commit utility installed on your machine.
+
 # License
 GNU General Public License v3.0 or later
 
