@@ -23,8 +23,5 @@ jobs:
       - name: Install ansible-lint and yamllint
         run: sudo pip3 install ansible-lint yamllint
 
-      - name: Run yamllint
-        run: yamllint .
-
       - name: Run ansiblelint
         run: ansible-lint
