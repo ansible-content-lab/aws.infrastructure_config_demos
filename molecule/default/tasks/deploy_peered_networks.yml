@@ -1,0 +1,68 @@
+---
+- name: Set required facts
+  ansible.builtin.set_fact:
+    aws_region: us-east-1
+    dmz_ssh_key_name: aws-test-key
+    priv_network_ssh_key_name: aws-test-key
+
+- name: Test Deploy Peer Network Role
+  block:
+    - name: Create Peer Network
+      ansible.builtin.import_role:
+        name: deploy_peered_networks
+
+- name: Test Deploy Peer Network Deployment
+  block:
+    - name: Create Peer Network
+      ansible.builtin.import_role:
+        name: deploy_peered_networks
+      vars:
+        operation: create
+
+    - name: Check VPCs
+      amazon.aws.ec2_vpc_net_info:
+        filters:
+          "tag:deployment": ansible
+          "tag:ansible-role": deploy_peered_networks
+        region: "{{ aws_region }}"
+      register: vpc_result
+
+    - name: Assert that there are at least two VPCs that exist
+      ansible.builtin.assert:
+        that:
+          - vpc_result.vpcs | length >= 2
+
+    - name: Get all vpc peers with specific filters
+      community.aws.ec2_vpc_peering_info:
+        filters:
+          "tag:deployment": ansible
+          "tag:ansible-role": deploy_peered_networks
+          status-code:
+            - active
+        region: "{{ aws_region }}"
+      register: vpc_peers_result
+
+    - name: Assert that there are at least one active VPC peers
+      ansible.builtin.assert:
+        that:
+          - vpc_result.vpcs | length >= 1
+
+    - name: Gather information about all instances in AZ ap-southeast-2a
+      amazon.aws.ec2_instance_info:
+        filters:
+          "tag:deployment": ansible
+          "tag:ansible-role": deploy_peered_networks
+        region: "{{ aws_region }}"
+      register: ec2_result
+
+    - name: Assert that there are at least two EC2 instances
+      ansible.builtin.assert:
+        that:
+          - vpc_result.vpcs | length >= 2
+
+  # ansible.builtin.always:
+  #   - name: Delete Peer Network
+  #     ansible.builtin.import_role:
+  #       name: roles/deploy_peered_networks
+  #     vars:
+  #       operation: delete

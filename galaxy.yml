@@ -13,11 +13,15 @@ tags:
   - "cloud"
   - "aws"
 dependencies:
-  Amazon.Aws: 4.0.0
-  Amazon.Cloud: 0.1.0
-  Community.Aws: 4.0.0
-repository: https://github.com/Ansible-Incubated-Content/cloud.aws_roles
-documentation: http://docs.example.com
-homepage: https://ansible-incubated-content.github.io/
-issues: https://github.com/Ansible-Incubated-Content/cloud.aws_roles/issues
-build_ignore: []
+  amazon.aws: 4.0.0
+  amazon.cloud: 0.1.0
+  community.aws: 4.0.0
+repository: https://github.com/ansible-content-lab/cloud.aws_roles
+documentation: https://github.com/ansible-content-lab/cloud.aws_roles
+homepage: https://github.com/ansible-content-lab/cloud.aws_roles
+issues: https://github.com/ansible-content-lab/cloud.aws_roles/issues
+build_ignore:
+  - ".tox"
+  - ".git"
+  - ".github"
+  - ".gitignore"

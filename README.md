@@ -29,18 +29,18 @@ Click on the role name to be directed to the README specifically for that role.
 
 ## Installation and Usage
 
-### Installing the Collection from Ansible Galaxy
+### Installing the Collection with the Ansible Galaxy CLI
 
 Before using the aws_roles collection, you need to install it with the Ansible Galaxy CLI:
 
-    ansible-galaxy collection install cloud.aws_roles
+`ansible-galaxy collection install git+https://github.com/ansible-content-lab/cloud.aws_roles.git`
 
 You can also include it in a `requirements.yml` file and install it via `ansible-galaxy collection install -r requirements.yml`, using the format:
 
 ```yaml
 ---
 collections:
-  - name: [cloud.aws_roles](https://github.com/ansible-content-lab/cloud.aws_roles)
+  - name: https://github.com/ansible-content-lab/cloud.aws_roles.git
     type: git
     version: main
 ```
@@ -48,4 +48,4 @@ collections:
 # License
 GNU General Public License v3.0 or later
 
-See [LICENCE](https://github.com/Ansible-Incubated-Content/cloud.aws_roles/blob/main/LICENSE) to see the full text.
+See [LICENCE](https://github.com/ansible-content-lab/cloud.aws_roles/blob/main/LICENSE) to see the full text.
