@@ -5,17 +5,11 @@
     dmz_ssh_key_name: aws-test-key
     priv_network_ssh_key_name: aws-test-key
 
-- name: Test Deploy Peer Network Role
-  block:
-    - name: Create Peer Network
-      ansible.builtin.import_role:
-        name: deploy_peered_networks
-
 - name: Test Deploy Peer Network Deployment
   block:
     - name: Create Peer Network
       ansible.builtin.import_role:
-        name: deploy_peered_networks
+        name: cloud.aws_roles.deploy_peered_networks
       vars:
         operation: create
 
@@ -47,7 +41,7 @@
         that:
           - vpc_result.vpcs | length >= 1
 
-    - name: Gather information about all instances in AZ ap-southeast-2a
+    - name: Gather information about all instances in region
       amazon.aws.ec2_instance_info:
         filters:
           "tag:deployment": ansible
@@ -60,9 +54,9 @@
         that:
           - vpc_result.vpcs | length >= 2
 
-  # ansible.builtin.always:
-  #   - name: Delete Peer Network
-  #     ansible.builtin.import_role:
-  #       name: roles/deploy_peered_networks
-  #     vars:
-  #       operation: delete
+  always:
+    - name: Delete Peer Network
+      ansible.builtin.import_role:
+        name: cloud.aws_roles.deploy_peered_networks
+      vars:
+        operation: delete

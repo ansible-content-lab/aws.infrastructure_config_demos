@@ -5,6 +5,9 @@ platforms:
   - name: instance-kind
 provisioner:
   name: ansible
+  inventory:
+    links:
+      hosts: "../../inventory/hosts"
   log: true
   lint: {}
   env:
@@ -12,7 +15,7 @@ provisioner:
   options:
     vvv: true
 scenario:
-  name: default
+  name: deploy_peered_networks
   test_sequence:
     - dependency
     - syntax
