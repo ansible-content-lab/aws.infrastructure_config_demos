@@ -4,8 +4,9 @@
   connection: local
   gather_facts: false
   collections:
-    - cloud.aws_roles
     - amazon.aws
+    - cloud.aws_roles
+    - community.aws
   vars_files:
     - vars/main.yml
   tasks:
