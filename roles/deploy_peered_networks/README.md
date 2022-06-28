@@ -14,13 +14,15 @@ The following variables are used during deployment and can be configured as extr
 
 ```yaml
 ---
-aws_region: us-east-1
+aws_region: us-east-1 # The region in which the resources are deployed
+dmz_ssh_key_name: aws-test-key # The AWS SSH key to use when configuring access to the EC2 instances
 ```
 
 #### Optional
 
 ```yaml
 ---
+# These variables can be configured to change the VPC networks and the EC2 instances deployed into them.
 tenancy: default
 vpc_priv_net_cidr: 10.0.0.0/16
 vpc_priv_net_priv_subnet_cidr: 10.0.0.0/24

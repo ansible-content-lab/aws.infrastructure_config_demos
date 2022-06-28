@@ -29,6 +29,23 @@ Click on the role name to be directed to the README specifically for that role.
 | `cloud.aws_roles.peer_networks`       | `roles.peer_networks`          | Peer two or more VPCs with VPC peering.                                                    |
 <!--end collection content-->
 
+#### Create Peer Network
+
+The `cloud.aws_roles.create_peer_network` playbook runs the work in the `roles.deploy_peered_networks` role.  It has another tasks block that will attempt to configure the resources deployed by that role a bit farther.  When the role completes, EC2 instances in the DMZ will still need to be configured with SSH configuration in order to communicate with EC2 instances in the private network(s).
+
+To connect to the DMZ EC2 instance, the `ansible_ssh_private_key_file` variable needs to be set so that the machine running the playbook can connect to the newly created EC2 instance.  You may set this variable in any way that Ansible allows, i.e. extra var, host var, etc.  It must be set or the configuration step will be skipped.  The `ansible_ssh_user` variable is set automatically to the user `ec2-user` that is standard on AWS AMIs.
+
+When the following variables are set, then the playbook will also configure the DMZ EC2 instance with the SSH config and a private key to communicate with each other.  This leaves the deployment in an immediately accessible state.
+
+```yaml
+# These variables determine if there is an attempt to configure the DMZ VM to connect to other VMs.
+priv_network_ssh_key_name: aws-test-key # The name of the AWS SSH key used to configure EC2 instances on the private network
+ansible_ssh_private_key_file_local_path: ~/.ssh/aws-test-key.pem # Must exist locally or be mapped in an EE
+ansible_ssh_private_key_file_dest_path: ~/.ssh/aws-test-key.pem # This will be the destination for the private key
+priv_network_hosts_pattern: 10.* # Will use the same username and ssh key for any host on the 10.* network
+priv_network_ssh_user: ec2-user # Will likely always be `ec2-user`, but set here as an option
+```
+
 ## Installation and Usage
 
 ### Installing the Collection with the Ansible Galaxy CLI
