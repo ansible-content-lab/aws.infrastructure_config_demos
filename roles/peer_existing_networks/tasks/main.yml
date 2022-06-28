@@ -1,132 +1,132 @@
 ---
-# Create Network Peering
+- name: Create Network Peering
+  block:
+    - name: Peer DMZ and Private Networks
+      community.aws.ec2_vpc_peer:
+        region: "{{ aws_region }}"
+        vpc_id: "{{ source_vpc.vpc_id }}"
+        peer_vpc_id: "{{ item }}"
+        state: present
+        tags:
+          Name: "{{ source_vpc.vpc_id }}-{{ item }}-peering"
+          deployment: ansible
+          ansible-role: peer_existing_networks
+      register: peer_connections
+      loop: "{{ peerings }}"
+      tags:
+        - peer
 
-- name: Peer DMZ and Private Networks
-  community.aws.ec2_vpc_peer:
-    region: "{{ aws_region }}"
-    vpc_id: "{{ source_vpc.vpc_id }}"
-    peer_vpc_id: "{{ item }}"
-    state: present
-    tags:
-      Name: "{{ source_vpc.vpc_id }}-{{ item }}-peering"
-      deployment: ansible
-      ansible-role: peer_existing_networks
-  register: peer_connections
-  loop: "{{ peerings }}"
-  tags:
-    - peer
+    - name: Accept local VPC peering request
+      community.aws.ec2_vpc_peer:
+        region: "{{ aws_region }}"
+        peering_id: "{{ item.peering_id }}"
+        state: accept
+      loop: "{{ peer_connections.results }}"
+      register: action_peer
+      tags:
+        - peer
 
-- name: Accept local VPC peering request
-  community.aws.ec2_vpc_peer:
-    region: "{{ aws_region }}"
-    peering_id: "{{ item.peering_id }}"
-    state: accept
-  loop: "{{ peer_connections.results }}"
-  register: action_peer
-  tags:
-    - peer
+- name: Create Security Group
+  block:
+    - name: Create security group with all permissions
+      amazon.aws.ec2_group:
+        name: "{{ source_vpc.vpc_id  }}-sg"
+        description: Security group created by peer network automation
+        vpc_id: "{{ source_vpc.vpc_id }}"
+        region: "{{ aws_region }}"
+        rules:
+          - proto: tcp
+            cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
+            from_port: 0
+            to_port: 65535
+            rule_desc: allow all local network tcp traffic
+          - proto: udp
+            cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
+            from_port: 0
+            to_port: 65535
+            rule_desc: allow all local network udp traffic
+          - proto: icmp
+            cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
+            from_port: -1
+            to_port: -1
+            rule_desc: allow all local network icmp traffic
+        rules_egress:
+          - proto: all
+            cidr_ip: "{{ security.security_group_engress_cidr_block }}"
+            rule_desc: allow all outbound traffic
+        tags:
+          Name: "{{ source_vpc.vpc_id  }}-sg"
+          deployment: ansible
+          ansible-role: peer_existing_networks
+      when: security.type == 'all'
+      tags:
+        - sg
 
-# Create Security Group
+    - name: Create security group with icmp permissions
+      amazon.aws.ec2_group:
+        name: "{{ source_vpc.vpc_id  }}-sg"
+        description: Security group created by peer network automation
+        vpc_id: "{{ source_vpc.vpc_id }}"
+        region: "{{ aws_region }}"
+        rules:
+          - proto: icmp
+            cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
+            from_port: -1
+            to_port: -1
+            rule_desc: allow all local network icmp traffic
+        rules_egress:
+          - proto: all
+            cidr_ip: "{{ security.security_group_engress_cidr_block }}"
+            rule_desc: allow all outbound traffic
+        tags:
+          Name: "{{ source_vpc.vpc_id  }}-sg"
+          deployment: ansible
+          ansible-role: peer_existing_networks
+      when: security.type == 'icmp'
+      tags:
+        - sg
 
-- name: Create security group with all permissions
-  amazon.aws.ec2_group:
-    name: "{{ source_vpc.vpc_id  }}-sg"
-    description: Security group created by peer network automation
-    vpc_id: "{{ source_vpc.vpc_id }}"
-    region: "{{ aws_region }}"
-    rules:
-      - proto: tcp
-        cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
-        from_port: 0
-        to_port: 65535
-        rule_desc: allow all local network tcp traffic
-      - proto: udp
-        cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
-        from_port: 0
-        to_port: 65535
-        rule_desc: allow all local network udp traffic
-      - proto: icmp
-        cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
-        from_port: -1
-        to_port: -1
-        rule_desc: allow all local network icmp traffic
-    rules_egress:
-      - proto: all
-        cidr_ip: "{{ security.security_group_engress_cidr_block }}"
-        rule_desc: allow all outbound traffic
-    tags:
-      Name: "{{ source_vpc.vpc_id  }}-sg"
-      deployment: ansible
-      ansible-role: peer_existing_networks
-  when: security.type == 'all'
-  tags:
-    - sg
+    - name: Create security group with ssh permissions
+      amazon.aws.ec2_group:
+        name: "{{ source_vpc.vpc_id  }}-sg"
+        description: Security group created by peer network automation
+        vpc_id: "{{ source_vpc.vpc_id }}"
+        region: "{{ aws_region }}"
+        rules:
+          - proto: tcp
+            cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
+            ports:
+              - 22
+            rule_desc: allow all local network ssh traffic
+        rules_egress:
+          - proto: all
+            cidr_ip: "{{ security.security_group_engress_cidr_block }}"
+            rule_desc: allow all outbound traffic
+        tags:
+          Name: "{{ source_vpc.vpc_id  }}-sg"
+          deployment: ansible
+          ansible-role: peer_existing_networks
+      when: security.type == 'icmp'
+      tags:
+        - sg
 
-- name: Create security group with icmp permissions
-  amazon.aws.ec2_group:
-    name: "{{ source_vpc.vpc_id  }}-sg"
-    description: Security group created by peer network automation
-    vpc_id: "{{ source_vpc.vpc_id }}"
-    region: "{{ aws_region }}"
-    rules:
-      - proto: icmp
-        cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
-        from_port: -1
-        to_port: -1
-        rule_desc: allow all local network icmp traffic
-    rules_egress:
-      - proto: all
-        cidr_ip: "{{ security.security_group_engress_cidr_block }}"
-        rule_desc: allow all outbound traffic
-    tags:
-      Name: "{{ source_vpc.vpc_id  }}-sg"
-      deployment: ansible
-      ansible-role: peer_existing_networks
-  when: security.type == 'icmp'
-  tags:
-    - sg
+- name: Update Route Table
+  block:
+    - name: Create routes
+      vars:
+        route:
+          dest: "{{ item.vpc_peering_connection.accepter_vpc_info.cidr_block }}"
+          vpc_peering_connection_id: "{{ item.peering_id }}"
+      ansible.builtin.set_fact:
+        routes: "{{ routes | default([]) + [route] }}"
+      loop: "{{ peer_connections.results }}"
+      no_log: true
 
-- name: Create security group with ssh permissions
-  amazon.aws.ec2_group:
-    name: "{{ source_vpc.vpc_id  }}-sg"
-    description: Security group created by peer network automation
-    vpc_id: "{{ source_vpc.vpc_id }}"
-    region: "{{ aws_region }}"
-    rules:
-      - proto: tcp
-        cidr_ip: "{{ security.security_group_ingress_cidr_block }}"
-        ports:
-          - 22
-        rule_desc: allow all local network ssh traffic
-    rules_egress:
-      - proto: all
-        cidr_ip: "{{ security.security_group_engress_cidr_block }}"
-        rule_desc: allow all outbound traffic
-    tags:
-      Name: "{{ source_vpc.vpc_id  }}-sg"
-      deployment: ansible
-      ansible-role: peer_existing_networks
-  when: security.type == 'icmp'
-  tags:
-    - sg
-
-# Update Route Table
-
-- name: Create routes
-  vars:
-    route:
-      dest: "{{ item.vpc_peering_connection.accepter_vpc_info.cidr_block }}"
-      vpc_peering_connection_id: "{{ item.peering_id }}"
-  ansible.builtin.set_fact:
-    routes: "{{ routes | default([]) + [route] }}"
-  loop: "{{ peer_connections.results }}"
-  no_log: true
-
-- name: Update route tables with new routes
-  amazon.aws.ec2_vpc_route_table:
-    lookup: id
-    region: "{{ aws_region }}"
-    route_table_id: "{{ item }}"
-    routes: "{{ routes | list }}"
-    vpc_id: "{{ source_vpc.vpc_id }}"
-  loop: "{{ route_tables }}"
+    - name: Update route tables with new routes
+      amazon.aws.ec2_vpc_route_table:
+        lookup: id
+        region: "{{ aws_region }}"
+        route_table_id: "{{ item }}"
+        routes: "{{ routes | list }}"
+        vpc_id: "{{ source_vpc.vpc_id }}"
+      loop: "{{ route_tables }}"
