@@ -6,6 +6,8 @@ This repository hosts the `cloud.aws_roles` Ansible Collection.
 
 The collection includes a variety of Ansible roles and playbook to help automate the management of resources on AWS.
 
+This content was developed as part of the [Ansible Content Lab for Cloud Content](https://ansible-content-lab.github.io/), a program from the Ansible team to help incubate Ansible cloud use cases from ideation to collections and roles.
+
 ## Included Content
 
 <!--start collection content-->
