@@ -5,6 +5,7 @@
       amazon.aws.ec2_vpc_net:
         name: private-network-vpc
         cidr_block: "{{ vpc_priv_net_cidr }}"
+        purge_tags: false
         region: "{{ aws_region }}"
         tenancy: "{{ tenancy }}"
         state: present
@@ -65,6 +66,7 @@
       amazon.aws.ec2_vpc_net:
         name: dmz-vpc
         cidr_block: "{{ vpc_dmz_cidr }}"
+        purge_tags: false
         region: "{{ aws_region }}"
         state: present
         tenancy: "{{ tenancy }}"
