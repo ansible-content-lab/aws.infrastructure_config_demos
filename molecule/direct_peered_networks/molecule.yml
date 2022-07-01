@@ -15,7 +15,7 @@ provisioner:
   options:
     vvv: true
 scenario:
-  name: deploy_peered_networks
+  name: direct_peered_networks
   test_sequence:
     - dependency
     - syntax

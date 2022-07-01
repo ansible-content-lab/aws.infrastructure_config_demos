@@ -7,11 +7,11 @@
     - amazon.aws
     - community.aws
   tasks:
-    - name: test deploy_peered_networks role
+    - name: test direct_peered_networks role
       include_tasks:
-        file: tasks/deploy_peered_networks.yml
+        file: tasks/direct_peered_networks.yml
         apply:
           tags:
-            - deploy_peered_networks
+            - direct_peered_networks
       tags:
         - always

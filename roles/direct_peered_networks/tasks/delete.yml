@@ -5,7 +5,8 @@
       amazon.aws.ec2_instance:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": deploy_peered_networks
+          "tag:ansible-role": direct_peered_networks
+        purge_tags: false
         region: "{{ aws_region }}"
         state: absent
 
@@ -15,7 +16,7 @@
       community.aws.ec2_vpc_peering_info:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": deploy_peered_networks
+          "tag:ansible-role": direct_peered_networks
           status-code:
             - active
         region: "{{ aws_region }}"
@@ -35,7 +36,7 @@
       amazon.aws.ec2_vpc_nat_gateway_info:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": deploy_peered_networks
+          "tag:ansible-role": direct_peered_networks
           state:
             - pending
             - failed
@@ -60,7 +61,7 @@
       amazon.aws.ec2_vpc_igw_info:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": deploy_peered_networks
+          "tag:ansible-role": direct_peered_networks
         region: "{{ aws_region }}"
       register: igws
 
@@ -78,7 +79,7 @@
       amazon.aws.ec2_vpc_subnet_info:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": deploy_peered_networks
+          "tag:ansible-role": direct_peered_networks
         region: "{{ aws_region }}"
       register: vpc_subnets
 
@@ -97,7 +98,7 @@
       amazon.aws.ec2_vpc_route_table_info:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": deploy_peered_networks
+          "tag:ansible-role": direct_peered_networks
         region: "{{ aws_region }}"
       register: vpc_rts
 
@@ -117,7 +118,7 @@
       amazon.aws.ec2_group_info:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": deploy_peered_networks
+          "tag:ansible-role": direct_peered_networks
         region: "{{ aws_region }}"
       register: security_groups
 
@@ -135,7 +136,7 @@
       amazon.aws.ec2_vpc_net_info:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": deploy_peered_networks
+          "tag:ansible-role": direct_peered_networks
         region: "{{ aws_region }}"
       register: peer_networking_vpcs
 

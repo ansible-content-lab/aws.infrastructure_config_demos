@@ -11,7 +11,7 @@
         state: present
         tags:
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: priv_network_vpc
 
     - name: Create private subnet for private network
@@ -23,7 +23,7 @@
         tags:
           Name: priv-net-private-subnet
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: priv_network_priv_subnet
 
     - name: Create public subnet for private network natgw
@@ -35,7 +35,7 @@
         tags:
           Name: priv-net-public-subnet
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: priv_network_public_subnet
 
     - name: Create Internet Gateway for private network (to connect NAT gateway)
@@ -46,7 +46,7 @@
         tags:
           Name: priv-network-ig
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: priv_network_igw
 
     - name: Create NAT gateway and allocate EIP if a nat gateway does not yet exist in the subnet
@@ -59,7 +59,7 @@
         tags:
           Name: priv-network-nat-gw
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: priv_network_nat_gateway
 
     - name: Create DMZ VPC
@@ -72,7 +72,7 @@
         tenancy: "{{ tenancy }}"
         tags:
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: dmz_vpc
 
     - name: Create subnet for DMZ network
@@ -84,7 +84,7 @@
         tags:
           Name: dmz-subnet
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: dmz_subnet
 
     - name: Create Internet Gateway for the DMZ
@@ -95,7 +95,7 @@
         tags:
           Name: dmz-ig
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: dmz_igw
 
     - name: Create DMZ allow SSH security group
@@ -132,7 +132,7 @@
         tags:
           Name: dmz-sg
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: dmz_sg
 
     - name: Create priv network security group
@@ -164,7 +164,7 @@
         tags:
           Name: private-network-sg
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: priv_network_sg
 
 - name: Network Peering
@@ -178,7 +178,7 @@
         tags:
           Name: "{{ priv_network_vpc.vpc.id }}-{{ dmz_vpc.vpc.id }}-peering"
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
       register: vpc_peer
 
     - name: Accept local VPC peering request
@@ -202,7 +202,7 @@
         tags:
           Name: priv-net-pub-subnet-rt
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
         vpc_id: "{{ priv_network_vpc.vpc.id }}"
       register: priv_net_pub_subnet_rt
 
@@ -220,7 +220,7 @@
         tags:
           Name: priv-net-priv-subnet-rt
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
         vpc_id: "{{ priv_network_vpc.vpc.id }}"
       register: priv_net_priv_subnet_rt
 
@@ -238,7 +238,7 @@
         tags:
           Name: dmz-rt
           deployment: ansible
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
         vpc_id: "{{ dmz_vpc.vpc.id }}"
       register: dmz_rt
 
@@ -249,7 +249,7 @@
         filters:
           "tag:deployment": ansible
           "tag:purpose": ssh-tunnel
-          "tag:ansible-role": deploy_peered_networks
+          "tag:ansible-role": direct_peered_networks
           instance-state-name:
             - pending
             - running
@@ -296,7 +296,7 @@
         tags:
           deployment: ansible
           purpose: ssh-tunnel
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
         tenancy: "{{ tenancy }}"
         vpc_subnet_id: "{{ dmz_subnet.subnet.id }}"
         wait: true
@@ -329,7 +329,7 @@
         filters:
           "tag:deployment": ansible
           "tag:purpose": priv-network-vm
-          "tag:ansible-role": deploy_peered_networks
+          "tag:ansible-role": direct_peered_networks
           instance-state-name:
             - pending
             - running
@@ -376,7 +376,7 @@
         tags:
           deployment: ansible
           purpose: priv-network-vm
-          ansible-role: deploy_peered_networks
+          ansible-role: direct_peered_networks
         tenancy: "{{ tenancy }}"
         vpc_subnet_id: "{{ priv_network_priv_subnet.subnet.id }}"
         wait: true
