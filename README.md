@@ -15,11 +15,11 @@ This content was developed as part of the [Ansible Content Lab for Cloud Content
 
 Click on the role name to be directed to the README specifically for that role.
 
-| Name                                                                                                                                               | Description                                                                                            |
-|----------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| [cloud.aws_roles.direct_peered_networks](https://github.com/ansible-content-lab/cloud.aws_roles/blob/main/roles/direct_peered_networks/README.md)  | A role to create a VPC networking architecture that includes peer networking DMZ and private networks. |
-| [cloud.aws_roles.direct_peered_networks](https://github.com/ansible-content-lab/cloud.aws_roles/blob/main/roles/transit_peered_networks/README.md) | A role to create a hub-and-spoke VPC networking architecture that includes DMZ and private networks.   |
-| [cloud.aws_roles.peer_existing_networks](https://github.com/ansible-content-lab/cloud.aws_roles/blob/main/roles/peer_existing_networks/README.md)  | A role to automate the peering of two or more VPCs through direct peering model.                       |
+| Name                                                                                                                                                | Description                                                                                            |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| [cloud.aws_roles.direct_peered_networks](https://github.com/ansible-content-lab/cloud.aws_roles/blob/main/roles/direct_peered_networks/README.md)   | A role to create a VPC networking architecture that includes peer networking DMZ and private networks. |
+| [cloud.aws_roles.transit_peered_networks](https://github.com/ansible-content-lab/cloud.aws_roles/blob/main/roles/transit_peered_networks/README.md) | A role to create a hub-and-spoke VPC networking architecture that includes DMZ and private networks.   |
+| [cloud.aws_roles.peer_existing_networks](https://github.com/ansible-content-lab/cloud.aws_roles/blob/main/roles/peer_existing_networks/README.md)   | A role to automate the peering of two or more VPCs through direct peering model.                       |
 
 ### Playbooks
 
