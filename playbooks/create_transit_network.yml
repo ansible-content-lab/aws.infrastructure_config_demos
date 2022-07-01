@@ -1,0 +1,60 @@
+---
+- name: Bootstrap transit network configuration with DMZ and private network
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - amazon.aws
+    - community.aws
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: Fail if AWS region not defined
+      ansible.builtin.fail:
+        msg: "AWS Region must be defined"
+      when: aws_region is not defined
+
+    - name: Fail if DMZ SSH key not defined
+      ansible.builtin.fail:
+        msg: "DMZ SSH key pair name must be defined"
+      when: dmz_ssh_key_name is not defined
+
+    - name: Fail if Private Network SSH key not defined
+      ansible.builtin.fail:
+        msg: "Priv Network SSH key pair name must be defined"
+      when: priv_network_ssh_key_name is not defined
+
+    - name: Create Transit Networking Model
+      ansible.builtin.import_role:
+        name: roles/transit_peered_networks
+      vars:
+        operation: create
+
+- name: Configure EC2 instances created in the DMZ for SSH access to private hosts
+  hosts: DMZ
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: Configure SSH when the playbook has the proper variables
+      block:
+        - name: Create SSH config file
+          ansible.builtin.lineinfile:
+            path: ~/.ssh/config
+            line: |
+              host {{ priv_network_hosts_pattern }}
+                User {{ priv_network_ssh_user }}
+                IdentityFile {{ ansible_ssh_private_key_file_dest_path }}
+            create: true
+            mode: "0655"
+        - name: Secure SSH config file
+          ansible.builtin.file:
+            path: ~/.ssh/config
+            mode: "0600"
+        - name: Add SSH private key to DMZ service so that it can access private network servers
+          ansible.builtin.copy:
+            src: "{{ ansible_ssh_private_key_file_local_path }}"
+            dest: "{{ ansible_ssh_private_key_file_dest_path }}"
+            owner: "{{ ansible_ssh_user }}"
+            group: "{{ ansible_ssh_user }}"
+            mode: "0600"
+      when: ansible_ssh_user is defined and ansible_ssh_private_key_file is defined and priv_network_ssh_user is defined

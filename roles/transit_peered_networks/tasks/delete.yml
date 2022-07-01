@@ -3,7 +3,7 @@
   amazon.aws.ec2_vpc_net_info:
     filters:
       "tag:deployment": ansible
-      "tag:ansible-role": direct_peered_networks
+      "tag:ansible-role": transit_peered_networks
     region: "{{ aws_region }}"
   register: vpc_results
 
@@ -13,30 +13,53 @@
       amazon.aws.ec2_instance:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": direct_peered_networks
+          "tag:ansible-role": transit_peered_networks
         purge_tags: false
         region: "{{ aws_region }}"
         state: absent
 
 - name: Remove Network Peering
   block:
-    - name: Get all vpc peers with specific filters
-      community.aws.ec2_vpc_peering_info:
+    - name: Get transit gateway
+      community.aws.ec2_transit_gateway_info:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": direct_peered_networks
-          status-code:
-            - active
+          "tag:ansible-role": transit_peered_networks
+          state:
+            - pending-acceptance
+            - pending
+            - available
         region: "{{ aws_region }}"
-      register: vpc_peers
+      register: transit_gw_results
 
-    - name: Delete found peers
-      community.aws.ec2_vpc_peer:
-        peering_id: "{{ item.vpc_peering_connection_id }}"
+    - name: Get transit gateway attachments
+      community.aws.ec2_transit_gateway_vpc_attachment_info:
+        filters:
+          "tag:deployment": ansible
+          "tag:ansible-role": transit_peered_networks
+          transit-gateway-id: "{{ transit_gw_results.transit_gateways[0].transit_gateway_id }}"
+          state:
+            - pending
+            - available
+        region: "{{ aws_region }}"
+      register: tgw_attachment_results
+      when: transit_gw_results.transit_gateways is defined and (transit_gw_results.transit_gateways | length == 1)
+
+    - name: Delete transit gateway attachments
+      community.aws.ec2_transit_gateway_vpc_attachment:
+        state: absent
+        id: "{{ item.transit_gateway_attachment_id }}"
+        region: "{{ aws_region }}"
+      loop: "{{ tgw_attachment_results.attachments }}"
+      when: tgw_attachment_results.attachments is defined and (tgw_attachment_results.attachments | length > 0)
+
+    - name: Delete transit gateway
+      community.aws.ec2_transit_gateway:
         region: "{{ aws_region }}"
         state: absent
-      loop: "{{ vpc_peers.vpc_peering_connections }}"
-      when: vpc_peers.vpc_peering_connections is defined and (vpc_peers.vpc_peering_connections | length > 0)
+        transit_gateway_id: "{{ transit_gw_results.transit_gateways[0].transit_gateway_id }}"
+      register: tgw_attachment_results
+      when: transit_gw_results.transit_gateways is defined and (transit_gw_results.transit_gateways | length == 1)
 
 - name: Delete NAT Gateways
   block:
@@ -44,7 +67,7 @@
       amazon.aws.ec2_vpc_nat_gateway_info:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": direct_peered_networks
+          "tag:ansible-role": transit_peered_networks
           state:
             - pending
             - available
@@ -68,7 +91,7 @@
       amazon.aws.ec2_vpc_igw_info:
         filters:
           "tag:deployment": ansible
-          "tag:ansible-role": direct_peered_networks
+          "tag:ansible-role": transit_peered_networks
         region: "{{ aws_region }}"
       register: igws
 
@@ -129,7 +152,7 @@
         filters:
           vpc-id: "{{ item.id }}"
           "tag:deployment": ansible
-          "tag:ansible-role": direct_peered_networks
+          "tag:ansible-role": transit_peered_networks
         region: "{{ aws_region }}"
       loop: "{{ vpc_results.vpcs }}"
       register: security_groups

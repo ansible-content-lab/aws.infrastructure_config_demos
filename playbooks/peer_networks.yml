@@ -1,0 +1,19 @@
+---
+- name: Peer multiple networks using VPC peering
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - amazon.aws
+    - community.aws
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: Fail if AWS region not defined
+      ansible.builtin.fail:
+        msg: "AWS Region must be defined"
+      when: aws_region is not defined
+
+    - name: Create Peer Networking Model
+      ansible.builtin.import_role:
+        name: roles/peer_existing_networks
