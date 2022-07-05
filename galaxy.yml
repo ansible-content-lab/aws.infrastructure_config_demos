@@ -1,5 +1,5 @@
 ---
-namespace: cloud
+namespace: lab
 name: aws_roles
 version: 1.1.1
 readme: README.md
@@ -16,10 +16,10 @@ dependencies:
   amazon.aws: 4.0.0
   amazon.cloud: 0.1.0
   community.aws: 4.0.0
-repository: https://github.com/ansible-content-lab/cloud.aws_roles
-documentation: https://github.com/ansible-content-lab/cloud.aws_roles
-homepage: https://github.com/ansible-content-lab/cloud.aws_roles
-issues: https://github.com/ansible-content-lab/cloud.aws_roles/issues
+repository: https://github.com/ansible-content-lab/lab.aws_roles
+documentation: https://github.com/ansible-content-lab/lab.aws_roles
+homepage: https://github.com/ansible-content-lab/lab.aws_roles
+issues: https://github.com/ansible-content-lab/lab.aws_roles/issues
 build_ignore:
   - ".tox"
   - ".git"
