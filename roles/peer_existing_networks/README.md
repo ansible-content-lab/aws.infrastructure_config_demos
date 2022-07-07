@@ -14,8 +14,8 @@ When using this role, the following actions take place.
 
 The following variables are used during deployment.
 
-| Type Choice                                  | Description                                                                          |
-| -------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Variable                                     | Description                                                                          |
+|----------------------------------------------|--------------------------------------------------------------------------------------|
 | `aws_region`                                 | The region that your VPCs reside in.                                                 |
 | `source_vpc.vpc_id`                          | The newly created VPC that you want to pair to other networks.                       |
 | `source_vpc.cidr_block`                      | The CIDR block of the new VPC.                                                       |
@@ -49,7 +49,7 @@ route_tables:
 When setting the security type variable, the following choices can be used. 
 
 | Type Choice | Description                                                      |
-| ----------- | ---------------------------------------------------------------- |
+|-------------|------------------------------------------------------------------|
 | `all`       | Allows all traffic from the peered VPC(s) into the new VPC       |
 | `ssh`       | Allows only ssh traffic from the peered VPC(s) into the new VPC  |
 | `icmp`      | Allows only ICMP traffic from the peered VPC(s) into the new VPC |

@@ -1,0 +1,17 @@
+---
+- name: Converge
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - amazon.aws
+    - community.aws
+  tasks:
+    - name: test peer_transit_networks role
+      include_tasks:
+        file: tasks/peer_transit_networks.yml
+        apply:
+          tags:
+            - peer_transit_networks
+      tags:
+        - always

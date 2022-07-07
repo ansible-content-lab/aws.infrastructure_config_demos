@@ -1,0 +1,28 @@
+---
+driver:
+  name: delegated
+platforms:
+  - name: instance-kind
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: "../../inventory/hosts"
+  log: true
+  lint: {}
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+  options:
+    vvv: true
+scenario:
+  name: peer_transit_networks
+  test_sequence:
+    - dependency
+    - syntax
+    - prepare
+    - converge
+    - verify
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml

@@ -1,0 +1,140 @@
+---
+- name: Get new VPC
+  amazon.aws.ec2_vpc_net_info:
+    aws_region: "{{ aws_region }}"
+    filters: "{{ vpc_filters }}"
+  register: vpc_results
+
+- name: Fail if VPC not found
+  ansible.builtin.fail:
+    msg: Could not find VPC
+  when: vpc_results is not defined or (vpc_results.vpcs | length != 1)
+
+- name: Set VPC fact
+  ansible.builtin.set_fact:
+    vpc_id: "{{ vpc_results.vpcs[0].id }}"
+
+- name: Get subnets
+  amazon.aws.ec2_vpc_subnet_info:
+    aws_region: "{{ aws_region }}"
+    filters:
+      vpc-id: "{{ vpc_id }}"
+  register: subnet_results
+
+- name: Fail if subnets not found
+  ansible.builtin.fail:
+    msg: Could not find subnets
+  when: subnet_results is not defined or (subnet_results.subnets | length == 0)
+
+- name: Prep subnet lists
+  ansible.builtin.set_fact:
+    subnets: "{{  subnet_results.subnets }}"
+    subnet_cidr_blocks: "{{  subnet_results.subnets | map(attribute='cidr_block') }}"
+    filtered_subnet_azs: []
+    filtered_subnet_ids: []
+
+- name: Set subnet lists
+  ansible.builtin.set_fact:
+    subnet_azs: "{{ filtered_subnet_azs + [item.availability_zone] }}"
+    subnet_ids: "{{ filtered_subnet_ids + [item.id] }}"
+  with_items: "{{ subnet_results.subnets }}"
+  when: item.availability_zone not in filtered_subnet_azs
+
+- name: Attach subnets to Transit GW
+  vars:
+    subnet_ids: "{{ subnet_results.subnets | map(attribute='id') | list }}"
+  community.aws.ec2_transit_gateway_vpc_attachment:
+    state: present
+    transit_gateway: "{{ transit_gateway_id }}"
+    subnets: "{{ subnet_ids }}"
+    ipv6_support: false
+    purge_subnets: true
+    dns_support: true
+    appliance_mode_support: true
+    region: "{{ aws_region }}"
+    tags:
+      Name: "{{ tg_attachment_name }}"
+      deployment: ansible
+      ansible-role: transit_peered_networks
+  register: transit_gw_attachment
+
+- name: Get all Transit Gateway Attachments
+  community.aws.ec2_transit_gateway_vpc_attachment_info:
+    filters:
+      transit-gateway-id: "{{ transit_gateway_id }}"
+    region: "{{ aws_region }}"
+  register: tgw_attachment_results
+
+- name: Fail if Transit Gateway not found
+  ansible.builtin.fail:
+    msg: Could not find transit gateway
+  when: tgw_attachment_results is not defined and (tgw_attachment_results.attachments | length > 0)
+
+- name: Create lists for attachment subnets
+  ansible.builtin.set_fact:
+    tgw_attachment_subnets: []
+
+- name: Add subnets in TGW attachments
+  ansible.builtin.set_fact:
+    tgw_attachment_subnets: "{{ tgw_attachment_subnets + item.subnet_ids }}"
+  with_items: "{{ tgw_attachment_results.attachments }}"
+
+- name: Get route tables for the attached subnets
+  amazon.aws.ec2_vpc_route_table_info:
+    filters:
+      "association.subnet-id": "{{ item }}"
+    region: "{{ aws_region }}"
+  with_items: "{{ tgw_attachment_subnets }}"
+  register: rt_results
+
+- name: Extract route tables
+  ansible.builtin.set_fact:
+    route_table_vpcs: []
+    route_tables: []
+
+- name: Add subnets in TGW attachments
+  ansible.builtin.set_fact:
+    route_table_vpcs: "{{ route_table_vpcs + (item.route_tables | map(attribute='vpc_id')) }}"
+    route_tables: "{{ route_tables + item.route_tables }}"
+  with_items: "{{ rt_results.results }}"
+
+- name: Get VPCs for the subnets
+  amazon.aws.ec2_vpc_net_info:
+    aws_region: "{{ aws_region }}"
+    filters:
+      state: available
+    vpc_ids: "{{ route_table_vpcs }}"
+  register: vpc_results
+
+- name: Extract VPC CIDR blocks
+  ansible.builtin.set_fact:
+    route_table_vpcs: "{{ route_table_vpcs + (item.route_tables | map(attribute='vpc_id')) }}"
+    route_tables: "{{ route_tables + item.route_tables }}"
+  with_items: "{{ rt_results.results }}"
+
+- name: Ensure unique VPCs
+  ansible.builtin.set_fact:
+    route_table_vpcs: "{{ route_table_vpcs | unique | list }}"
+
+- name: Get VPC details
+  amazon.aws.ec2_vpc_net_info:
+    aws_region: "{{ aws_region }}"
+    vpc_ids: "{{ route_table_vpcs }}"
+  register: rt_vpc_results
+
+- name: Update route tables for the attached subnets
+  amazon.aws.ec2_vpc_route_table:
+    region: "{{ aws_region }}"
+    lookup: id
+    purge_routes: false
+    purge_subnets: false
+    purge_tags: false
+    route_table_id: "{{ item[1].id }}"
+    routes:
+      - dest: "{{ item[0].cidr_block }}"
+        gateway_id: "{{ transit_gateway_id }}"
+    vpc_id: "{{ item[0].vpc_id }}"
+  with_nested:
+    - "{{ rt_vpc_results.vpcs }}"
+    - "{{ route_tables }}"
+  when: item[0].cidr_block not in (item[1].routes | map(attribute='destination_cidr_block') | list)

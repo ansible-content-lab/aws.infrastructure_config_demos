@@ -1,11 +1,17 @@
 ---
-# Use an env file to provide the proper extra vars to run tests successfully
+- name: Set required facts
+  ansible.builtin.set_fact:
+    aws_region: us-east-1
+    dmz_ssh_key_name: aws-test-key
+    priv_network_ssh_key_name: aws-test-key
 
 - name: Test Transit Network Deployment
   block:
     - name: Create Transit Network
       ansible.builtin.import_role:
-        name: lab.aws_roles.peer_transit_networks
+        name: lab.aws_roles.transit_peered_networks
+      vars:
+        operation: create
 
     - name: Check VPCs
       amazon.aws.ec2_vpc_net_info:
@@ -45,8 +51,28 @@
       register: tgw_attachment_results
       when: transit_gw_results.transit_gateways is defined and (transit_gw_results.transit_gateways | length == 1)
 
-    - name: Assert that there are attachments to more than two VPCs created
+    - name: Assert that there are attachments to the two VPCs created
       ansible.builtin.assert:
         that:
           - tgw_attachment_results.attachments is defined
-          - tgw_attachment_results.attachments | length > 2
+          - tgw_attachment_results.attachments | length == 2
+
+    - name: Gather information about all instances in region
+      amazon.aws.ec2_instance_info:
+        filters:
+          "tag:deployment": ansible
+          "tag:ansible-role": transit_peered_networks
+        region: "{{ aws_region }}"
+      register: ec2_result
+
+    - name: Assert that there are at least two EC2 instances
+      ansible.builtin.assert:
+        that:
+          - vpc_result.vpcs | length >= 2
+
+  always:
+    - name: Delete Transit Network
+      ansible.builtin.import_role:
+        name: lab.aws_roles.transit_peered_networks
+      vars:
+        operation: delete

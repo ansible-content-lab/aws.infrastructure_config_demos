@@ -15,21 +15,23 @@ This content was developed as part of the [Ansible Content Lab for Cloud Content
 
 Click on the role name to be directed to the README specifically for that role.
 
-| Name                                                                                                                                                | Description                                                                                            |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
-| [lab.aws_roles.direct_peered_networks](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/roles/direct_peered_networks/README.md)   | A role to create a VPC networking architecture that includes peer networking DMZ and private networks. |
-| [lab.aws_roles.transit_peered_networks](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/roles/transit_peered_networks/README.md) | A role to create a hub-and-spoke VPC networking architecture that includes DMZ and private networks.   |
-| [lab.aws_roles.peer_existing_networks](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/roles/peer_existing_networks/README.md)   | A role to automate the peering of two or more VPCs through direct peering model.                       |
+| Name                                                                                                                                            | Description                                                                                                                               |
+|-------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| [lab.aws_roles.direct_peered_networks](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/roles/direct_peered_networks/README.md)   | A role to create a VPC networking architecture that includes peer networking DMZ and private networks.                                    |
+| [lab.aws_roles.transit_peered_networks](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/roles/transit_peered_networks/README.md) | A role to create a hub-and-spoke VPC networking architecture that includes DMZ and private networks.                                      |
+| [lab.aws_roles.peer_existing_networks](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/roles/peer_existing_networks/README.md)   | A role to automate the peering of two or more VPCs through direct peering model.                                                          |
+| [lab.aws_roles.peer_transit_network](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/roles/peer_transit_network/README.md)       | Peers a VPC into an AWS transit gateway and configures routing rules across all attached VPCs to allow traffic to the newly attached VPC. |
 
 ### Playbooks
 
-| Name                                     | Role(s) Used                    | Description                                                                                                                 |
-|------------------------------------------|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| `lab.aws_roles.create_peer_network`    | `roles.direct_peered_networks`  | A playbook to create a multi-VPC peer network configuration with DMZ and private networks.                                  |
-| `lab.aws_roles.delete_peer_network`    | `roles.direct_peered_networks`  | Deletes AWS resources created in the `create_peer_network` playbook.                                                        |
-| `lab.aws_roles.create_transit_network` | `roles.transit_peered_networks` | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks. |
-| `lab.aws_roles.delete_transit_network` | `roles.transit_peered_networks` | Deletes AWS resources created in the `create_transit_network` playbook.                                                     |
-| `lab.aws_roles.peer_networks`          | `roles.peer_networks`           | Peer two or more VPCs with VPC peering.                                                                                     |
+| Name                                    | Role(s) Used                    | Description                                                                                                                 |
+|-----------------------------------------|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| `lab.aws_roles.create_peer_network`     | `roles.direct_peered_networks`  | A playbook to create a multi-VPC peer network configuration with DMZ and private networks.                                  |
+| `lab.aws_roles.delete_peer_network`     | `roles.direct_peered_networks`  | Deletes AWS resources created in the `create_peer_network` playbook.                                                        |
+| `lab.aws_roles.peer_networks`           | `roles.peer_networks`           | Peer two or more VPCs with VPC peering.                                                                                     |
+| `lab.aws_roles.create_transit_network`  | `roles.transit_peered_networks` | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks. |
+| `lab.aws_roles.delete_transit_network`  | `roles.transit_peered_networks` | Deletes AWS resources created in the `create_transit_network` playbook.                                                     |
+| `lab.aws_roles.peer_to_transit_network` | `roles.peer_transit_network`    | A playbook to execute the Transit Gateway peering operation in the role used.                                               |
 <!--end collection content-->
 
 #### Create Network Playbooks
