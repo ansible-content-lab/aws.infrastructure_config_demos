@@ -185,6 +185,15 @@
           ansible-role: transit_peered_networks
       register: transit_gw
 
+    - name: Output Transit GW ID
+      ansible.builtin.debug:
+        msg: "Transit GW ID: {{ transit_gw.transit_gateway.transit_gateway_id }}"
+
+    - name: Set stats for Controller for Transit GW
+      ansible.builtin.set_stats:
+        data:
+          transit_gw_id: "{{ transit_gw.transit_gateway.transit_gateway_id }}"
+
     - name: Attach DMZ to transit gateway
       community.aws.ec2_transit_gateway_vpc_attachment:
         state: present
