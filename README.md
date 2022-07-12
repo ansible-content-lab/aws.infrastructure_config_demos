@@ -42,6 +42,14 @@ To connect to the DMZ EC2 instance, the `ansible_ssh_private_key_file` variable 
 
 When the following variables are set, then the playbook will also configure the DMZ EC2 instance with the SSH config and a private key to communicate with each other.  This leaves the deployment in an immediately accessible state.
 
+| Variable                                  | Use                                                                                                                |
+|-------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| `priv_network_ssh_key_name`               | The AWS key name used for configuring SSH access to EC2 instances on the private VPC deployed in these roles.      |
+| `ansible_ssh_private_key_file_local_path` | The local path to an SSH private key that will be copied to the bastion host.                                      |
+| `ansible_ssh_private_key_file_dest_path`  | The destination path for the SSH key on the bastion host.                                                          |
+| `priv_network_hosts_pattern`              | A hosts pattern that will be added to the bastion host SSH config for easier access to machines on other networks. |
+| `priv_network_ssh_user`                   | The SSH user that will be configured in the bastion host SSH config.                                               |
+
 ```yaml
 # These variables determine if there is an attempt to configure the DMZ VM to connect to other VMs.
 priv_network_ssh_key_name: aws-test-key # The name of the AWS SSH key used to configure EC2 instances on the private network
