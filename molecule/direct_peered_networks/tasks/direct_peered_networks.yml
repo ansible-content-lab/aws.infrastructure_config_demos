@@ -9,7 +9,7 @@
   block:
     - name: Create Peer Network
       ansible.builtin.import_role:
-        name: lab.aws_roles.direct_peered_networks
+        name: lab.aws_roles.manage_direct_peered_networks
       vars:
         operation: create
 

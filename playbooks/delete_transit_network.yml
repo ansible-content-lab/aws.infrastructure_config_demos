@@ -17,6 +17,6 @@
 
     - name: Delete Transit Networking Model
       ansible.builtin.import_role:
-        name: roles/transit_peered_networks
+        name: roles/manage_transit_peered_networks
       vars:
         operation: delete
