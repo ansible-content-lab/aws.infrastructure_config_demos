@@ -32,7 +32,28 @@ Click on the role name to be directed to the README specifically for that role.
 | `lab.aws_roles.create_transit_network`  | `roles.manage_transit_peered_networks` | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks. |
 | `lab.aws_roles.delete_transit_network`  | `roles.manage_transit_peered_networks` | Deletes AWS resources created in the `create_transit_network` playbook.                                                     |
 | `lab.aws_roles.peer_to_transit_network` | `roles.peer_transit_network`           | A playbook to execute the Transit Gateway peering operation in the role used.                                               |
+| `lab.aws_roles.create_vm`               | N/A                                    | Simple playbook to create an AWS VM.                                                                                        |
+| `lab.aws_roles.delete_vm`               | N/A                                    | Deletes the VM created in the `create_vm` playbook.                                                                         |
 <!--end collection content-->
+
+#### VM Playbooks
+
+The `lab.aws_roles.create_vm` and `lab.aws_roles.delete_vm` playbooks demonstrate how you can construct automation to deploy AWS resources that have dependencies on others.  The more complex networking roles and playbooks automate building all of the resources, but these playbooks assume that you have existing infrastructure (VPCs, security groups, SSH keys, etc.) that you want to leverage to deploy the EC2 instance.  The command below shows how you can use Ansible Navigator to deploy the instance with variables being set both in var files and directly in the CLI.
+
+```yaml
+ansible-navigator run playbooks/create_vm.yml \
+--pae false \
+--mode stdout \
+--ee true \
+--eei quay.io/scottharwell/cloud-ee \
+--extra-vars "@playbooks/vars/create_vm.yml" \
+--extra-vars "vpc_subnet_id=subnet-0e5c2afbb..." \
+--extra-vars "security_group_id=sg-08814ac6..." \
+--extra-vars "ssh_key_name=my_key" \
+--eev $HOME/.ssh:/home/runner/.ssh \
+--penv AWS_ACCESS_KEY \
+--penv AWS_SECRET_ACCESS_KEY
+```
 
 #### Create Network Playbooks
 
