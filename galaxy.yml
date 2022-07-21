@@ -1,7 +1,7 @@
 ---
-namespace: lab
-name: aws_roles
-version: 1.1.1
+namespace: aws
+name: infrastructure_config_demos
+version: 1.1.2
 readme: README.md
 authors:
   - Scott Harwell <sharwell@redhat.com>
@@ -16,10 +16,10 @@ dependencies:
   amazon.aws: 4.0.0
   amazon.cloud: 0.1.0
   community.aws: 4.0.0
-repository: https://github.com/ansible-content-lab/lab.aws_roles
-documentation: https://github.com/ansible-content-lab/lab.aws_roles
-homepage: https://github.com/ansible-content-lab/lab.aws_roles
-issues: https://github.com/ansible-content-lab/lab.aws_roles/issues
+repository: https://github.com/ansible-content-lab/aws.infrastructure_config_demos
+documentation: https://github.com/ansible-content-lab/aws.infrastructure_config_demos
+homepage: https://github.com/ansible-content-lab/aws.infrastructure_config_demos
+issues: https://github.com/ansible-content-lab/aws.infrastructure_config_demos/issues
 build_ignore:
   - ".tox"
   - ".git"
