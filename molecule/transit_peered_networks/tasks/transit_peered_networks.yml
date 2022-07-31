@@ -5,7 +5,7 @@
   block:
     - name: Create Transit Network
       ansible.builtin.import_role:
-        name: lab.aws_roles.peer_transit_networks
+        name: aws.infrastructure_config_demos.peer_transit_networks
 
     - name: Check VPCs
       amazon.aws.ec2_vpc_net_info:

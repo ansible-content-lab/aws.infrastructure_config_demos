@@ -16,7 +16,7 @@
           "tag:deployment": ansible
           "tag:purpose": create-vm-demo
           "tag:ansible-role": none
-          "tag:ansible-collection": lab.aws_roles
+          "tag:ansible-collection": aws.infrastructure_config_demos
           instance-state-name:
             - pending
             - running

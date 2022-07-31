@@ -9,7 +9,7 @@
   block:
     - name: Create Transit Network
       ansible.builtin.import_role:
-        name: lab.aws_roles.transit_peered_networks
+        name: aws.infrastructure_config_demos.transit_peered_networks
       vars:
         operation: create
 
@@ -73,6 +73,6 @@
   always:
     - name: Delete Transit Network
       ansible.builtin.import_role:
-        name: lab.aws_roles.transit_peered_networks
+        name: aws.infrastructure_config_demos.transit_peered_networks
       vars:
         operation: delete

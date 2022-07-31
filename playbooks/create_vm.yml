@@ -22,7 +22,7 @@
           "tag:deployment": ansible
           "tag:purpose": create-vm-demo
           "tag:ansible-role": none
-          "tag:ansible-collection": lab.aws_roles
+          "tag:ansible-collection": aws.infrastructure_config_demos
           instance-state-name:
             - pending
             - running
@@ -63,7 +63,7 @@
           deployment: ansible
           purpose: create-vm-demo
           ansible-role: none
-          ansible-collection: lab.aws_roles
+          ansible-collection: aws.infrastructure_config_demos
         tenancy: "{{ tenancy }}"
         vpc_subnet_id: "{{ vpc_subnet_id }}"
         wait: true

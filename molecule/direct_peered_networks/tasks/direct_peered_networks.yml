@@ -9,7 +9,7 @@
   block:
     - name: Create Peer Network
       ansible.builtin.import_role:
-        name: lab.aws_roles.manage_direct_peered_networks
+        name: aws.infrastructure_config_demos.manage_direct_peered_networks
       vars:
         operation: create
 
@@ -57,6 +57,6 @@
   always:
     - name: Delete Peer Network
       ansible.builtin.import_role:
-        name: lab.aws_roles.direct_peered_networks
+        name: aws.infrastructure_config_demos.direct_peered_networks
       vars:
         operation: delete
