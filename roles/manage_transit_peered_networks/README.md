@@ -15,7 +15,9 @@ The following variables are used during deployment and can be configured as extr
 ```yaml
 ---
 aws_region: us-east-1 # The region in which the resources are deployed
-dmz_ssh_key_name: aws-test-key # The AWS SSH key to use when configuring access to the EC2 instances
+vm_ami: ami-06640050dc3f556bb # Replace with the proper RHEL AMI for your region.
+dmz_ssh_key_name: aws-test-key # The AWS SSH key to use when configuring access to the EC2 instances on the DMZ network.
+priv_network_ssh_key_name: aws-test-key # The AWS SSH key to use when configuring access to the EC2 instances on the private network.
 ```
 
 #### Optional
