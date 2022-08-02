@@ -50,4 +50,4 @@
             owner: "{{ ansible_ssh_user }}"
             group: "{{ ansible_ssh_user }}"
             mode: "0600"
-      when: ansible_ssh_user is defined and ansible_ssh_private_key_file is defined and priv_network_ssh_user is defined
+      when: ansible_ssh_user is defined and ansible_ssh_private_key_file is defined and priv_network_ssh_user is defined and priv_network_hosts_pattern is defined and ansible_ssh_private_key_file_local_path is defined and ansible_ssh_private_key_file_dest_path is defined

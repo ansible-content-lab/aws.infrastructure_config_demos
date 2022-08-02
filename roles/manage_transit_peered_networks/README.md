@@ -35,6 +35,10 @@ dmz_instance_type: t2.micro
 dmz_instance_name: dmz-ssh-tunnel-vm
 priv_network_instance_type: t2.micro
 priv_network_instance_name: priv-network-vm
+ansible_ssh_private_key_file_local_path: ~/.ssh/aws-test-key.pem # Must exist locally or be mapped in an EE
+ansible_ssh_private_key_file_dest_path: ~/.ssh/aws-test-key.pem
+priv_network_hosts_pattern: 10.*
+priv_network_ssh_user: ec2-user
 ```
 
 ### Infrastructure
