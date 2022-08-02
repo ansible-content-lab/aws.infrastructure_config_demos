@@ -25,10 +25,11 @@
 
 - name: Configure EC2 instances created in the DMZ for SSH access to private hosts
   hosts: DMZ
+  gather_facts: false
   vars_files:
     - vars/main.yml
   tasks:
-    - name: Configure SSH when the playbook has the proper variables
+    - name: Configure DMZ bastion SSH
       block:
         - name: Create SSH config file
           ansible.builtin.lineinfile:
