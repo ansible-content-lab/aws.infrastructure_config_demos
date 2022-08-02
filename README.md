@@ -47,6 +47,8 @@ ansible-navigator run playbooks/create_vm.yml \
 --ee true \
 --eei quay.io/scottharwell/cloud-ee \
 --extra-vars "@playbooks/vars/create_vm.yml" \
+--extra-vars "aws_region=eu-central-1" \
+--extra-vars "vm_ami=ami-0e7e134863fac4946" \
 --extra-vars "vpc_subnet_id=subnet-0e5c2afbb..." \
 --extra-vars "security_group_id=sg-08814ac6..." \
 --extra-vars "ssh_key_name=my_key" \
