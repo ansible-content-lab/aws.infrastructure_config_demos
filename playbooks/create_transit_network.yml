@@ -32,7 +32,12 @@
     - vars/main.yml
   tasks:
     - name: Configure DMZ bastion SSH
-      when: ansible_ssh_user is defined and ssh_key_data is defined and priv_network_ssh_user is defined and vpc_priv_net_hosts_pattern is defined and ansible_ssh_private_key_file_dest_path is defined
+      when:
+        - ansible_ssh_user is defined
+        - ssh_key_data is defined
+        - priv_network_ssh_user is defined
+        - vpc_priv_net_hosts_pattern is defined
+        - ansible_ssh_private_key_file_dest_path is defined
       block:
         - name: Create SSH config file
           ansible.builtin.lineinfile:
