@@ -36,8 +36,8 @@
 
     - name: Prep subnet lists
       ansible.builtin.set_fact:
-        subnets: "{{  subnet_results.subnets }}"
-        subnet_cidr_blocks: "{{  subnet_results.subnets | map(attribute='cidr_block') }}"
+        subnets: "{{ subnet_results.subnets }}"
+        subnet_cidr_blocks: "{{ subnet_results.subnets | map(attribute='cidr_block') }}"
         filtered_subnet_azs: []
         filtered_subnet_ids: []
 

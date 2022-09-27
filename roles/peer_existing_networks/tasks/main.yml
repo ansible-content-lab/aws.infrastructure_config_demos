@@ -30,7 +30,7 @@
   block:
     - name: Create security group with all permissions
       amazon.aws.ec2_group:
-        name: "{{ source_vpc.vpc_id  }}-sg"
+        name: "{{ source_vpc.vpc_id }}-sg"
         description: Security group created by peer network automation
         vpc_id: "{{ source_vpc.vpc_id }}"
         region: "{{ aws_region }}"
@@ -55,7 +55,7 @@
             cidr_ip: "{{ security.security_group_engress_cidr_block }}"
             rule_desc: allow all outbound traffic
         tags:
-          Name: "{{ source_vpc.vpc_id  }}-sg"
+          Name: "{{ source_vpc.vpc_id }}-sg"
           deployment: ansible
           ansible-role: peer_existing_networks
       when: security.type == 'all'
@@ -64,7 +64,7 @@
 
     - name: Create security group with icmp permissions
       amazon.aws.ec2_group:
-        name: "{{ source_vpc.vpc_id  }}-sg"
+        name: "{{ source_vpc.vpc_id }}-sg"
         description: Security group created by peer network automation
         vpc_id: "{{ source_vpc.vpc_id }}"
         region: "{{ aws_region }}"
@@ -79,7 +79,7 @@
             cidr_ip: "{{ security.security_group_engress_cidr_block }}"
             rule_desc: allow all outbound traffic
         tags:
-          Name: "{{ source_vpc.vpc_id  }}-sg"
+          Name: "{{ source_vpc.vpc_id }}-sg"
           deployment: ansible
           ansible-role: peer_existing_networks
       when: security.type == 'icmp'
@@ -88,7 +88,7 @@
 
     - name: Create security group with ssh permissions
       amazon.aws.ec2_group:
-        name: "{{ source_vpc.vpc_id  }}-sg"
+        name: "{{ source_vpc.vpc_id }}-sg"
         description: Security group created by peer network automation
         vpc_id: "{{ source_vpc.vpc_id }}"
         region: "{{ aws_region }}"
@@ -103,7 +103,7 @@
             cidr_ip: "{{ security.security_group_engress_cidr_block }}"
             rule_desc: allow all outbound traffic
         tags:
-          Name: "{{ source_vpc.vpc_id  }}-sg"
+          Name: "{{ source_vpc.vpc_id }}-sg"
           deployment: ansible
           ansible-role: peer_existing_networks
       when: security.type == 'icmp'
