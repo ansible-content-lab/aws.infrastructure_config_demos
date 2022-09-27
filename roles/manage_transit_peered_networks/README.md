@@ -19,6 +19,7 @@ priv_network_instance_ami: ami-06640050dc3f556bb # Replace with the proper RHEL 
 dmz_instance_ami: ami-06640050dc3f556bb # Replace with the proper RHEL AMI for your region.
 dmz_ssh_key_name: aws-test-key # The AWS SSH key to use when configuring access to the EC2 instances on the DMZ network.
 priv_network_ssh_key_name: aws-test-key # The AWS SSH key to use when configuring access to the EC2 instances on the private network.
+ssh_key_data: lookup('file', '~/.ssh/aws-test-key.pem') # The contents of the AWS SSH private key to store on the DMZ server for access to private network servers
 ```
 
 #### Optional
@@ -29,6 +30,7 @@ priv_network_ssh_key_name: aws-test-key # The AWS SSH key to use when configurin
 tenancy: default
 vpc_priv_net_cidr: 10.0.0.0/16
 vpc_priv_net_priv_subnet_cidr: 10.0.0.0/24
+vpc_priv_net_hosts_pattern: 10.0.*
 vpc_dmz_cidr: 10.1.0.0/16
 vpc_dmz_subnet1_cidr: 10.1.0.0/24
 dmz_instance_type: t2.micro
@@ -37,7 +39,6 @@ priv_network_instance_type: t2.micro
 priv_network_instance_name: priv-network-vm
 ansible_ssh_private_key_file_local_path: ~/.ssh/aws-test-key.pem # Must exist locally or be mapped in an EE
 ansible_ssh_private_key_file_dest_path: ~/.ssh/aws-test-key.pem
-priv_network_hosts_pattern: 10.*
 priv_network_ssh_user: ec2-user
 ```
 

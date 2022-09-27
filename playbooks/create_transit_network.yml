@@ -15,6 +15,8 @@
           - aws_region is defined
           - dmz_ssh_key_name is defined
           - priv_network_ssh_key_name is defined
+          - dmz_instance_ami is defined
+          - priv_network_instance_type is defined
         fail_msg: "Required variables not set"
 
     - name: Create Transit Networking Model
@@ -30,12 +32,13 @@
     - vars/main.yml
   tasks:
     - name: Configure DMZ bastion SSH
+      when: ansible_ssh_user is defined and ssh_key_data is defined and priv_network_ssh_user is defined and vpc_priv_net_hosts_pattern is defined and ansible_ssh_private_key_file_dest_path is defined
       block:
         - name: Create SSH config file
           ansible.builtin.lineinfile:
             path: ~/.ssh/config
             line: |
-              host {{ priv_network_hosts_pattern }}
+              host {{ vpc_priv_net_hosts_pattern }}
                 User {{ priv_network_ssh_user }}
                 IdentityFile {{ ansible_ssh_private_key_file_dest_path }}
             create: true
@@ -45,10 +48,9 @@
             path: ~/.ssh/config
             mode: "0600"
         - name: Add SSH private key to DMZ service so that it can access private network servers
-          ansible.builtin.copy:
-            src: "{{ ansible_ssh_private_key_file_local_path }}"
+          ansible.builtin.template:
+            src: templates/ssh_priv_key.j2
             dest: "{{ ansible_ssh_private_key_file_dest_path }}"
             owner: "{{ ansible_ssh_user }}"
             group: "{{ ansible_ssh_user }}"
             mode: "0600"
-      when: ansible_ssh_user is defined and ansible_ssh_private_key_file is defined and priv_network_ssh_user is defined and priv_network_hosts_pattern is defined and ansible_ssh_private_key_file_local_path is defined and ansible_ssh_private_key_file_dest_path is defined
