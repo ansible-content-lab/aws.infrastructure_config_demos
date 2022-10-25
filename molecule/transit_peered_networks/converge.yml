@@ -7,8 +7,8 @@
     - amazon.aws
     - community.aws
   tasks:
-    - name: test transit_peered_networks role
-      include_tasks:
+    - name: Test transit_peered_networks role
+      ansible.builtin.include_tasks:
         file: tasks/transit_peered_networks.yml
         apply:
           tags:

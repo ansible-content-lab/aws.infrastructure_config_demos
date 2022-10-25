@@ -7,8 +7,8 @@
     - amazon.aws
     - community.aws
   tasks:
-    - name: test direct_peered_networks role
-      include_tasks:
+    - name: Test direct_peered_networks role
+      ansible.builtin.include_tasks:
         file: tasks/direct_peered_networks.yml
         apply:
           tags:
