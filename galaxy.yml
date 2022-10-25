@@ -1,7 +1,7 @@
 ---
 namespace: aws
 name: infrastructure_config_demos
-version: 1.1.2
+version: 1.2.0
 readme: README.md
 authors:
   - Scott Harwell <sharwell@redhat.com>
