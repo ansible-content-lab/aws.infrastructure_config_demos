@@ -99,7 +99,7 @@
       register: dmz_igw
 
     - name: Create DMZ allow SSH security group
-      amazon.aws.ec2_group:
+      amazon.aws.ec2_security_group:
         name: dmz-sg
         description: DMZ VPC security group
         vpc_id: "{{ dmz_vpc.vpc.id }}"
@@ -136,7 +136,7 @@
       register: dmz_sg
 
     - name: Create priv network security group
-      amazon.aws.ec2_group:
+      amazon.aws.ec2_security_group:
         name: private-network-sg
         description: Private network security group
         vpc_id: "{{ priv_network_vpc.vpc.id }}"

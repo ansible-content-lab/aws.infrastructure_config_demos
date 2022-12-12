@@ -29,7 +29,7 @@
 - name: Create Security Group
   block:
     - name: Create security group with all permissions
-      amazon.aws.ec2_group:
+      amazon.aws.ec2_security_group:
         name: "{{ source_vpc.vpc_id }}-sg"
         description: Security group created by peer network automation
         vpc_id: "{{ source_vpc.vpc_id }}"
@@ -63,7 +63,7 @@
         - sg
 
     - name: Create security group with icmp permissions
-      amazon.aws.ec2_group:
+      amazon.aws.ec2_security_group:
         name: "{{ source_vpc.vpc_id }}-sg"
         description: Security group created by peer network automation
         vpc_id: "{{ source_vpc.vpc_id }}"
@@ -87,7 +87,7 @@
         - sg
 
     - name: Create security group with ssh permissions
-      amazon.aws.ec2_group:
+      amazon.aws.ec2_security_group:
         name: "{{ source_vpc.vpc_id }}-sg"
         description: Security group created by peer network automation
         vpc_id: "{{ source_vpc.vpc_id }}"

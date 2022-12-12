@@ -125,7 +125,7 @@
 - name: Delete Security Groups
   block:
     - name: Get Security Groups
-      amazon.aws.ec2_group_info:
+      amazon.aws.ec2_security_group_info:
         filters:
           vpc-id: "{{ item.id }}"
           "tag:deployment": ansible
@@ -136,7 +136,7 @@
       when: vpc_results.vpcs is defined and (vpc_results.vpcs | length > 0)
 
     - name: Delete Security Groups
-      amazon.aws.ec2_group:
+      amazon.aws.ec2_security_group:
         group_id: "{{ item.1.group_id }}"
         region: "{{ aws_region }}"
         state: absent
