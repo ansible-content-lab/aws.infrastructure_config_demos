@@ -1,5 +1,5 @@
 ---
-- name: Create VM Demo
+- name: Delete VM Demo
   hosts: localhost
   connection: local
   gather_facts: false

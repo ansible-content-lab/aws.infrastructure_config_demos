@@ -45,7 +45,7 @@ ansible-navigator run playbooks/create_vm.yml \
 --pae false \
 --mode stdout \
 --ee true \
---eei quay.io/scottharwell/cloud-ee \
+--eei quay.io/scottharwell/cloud-ee:latest \
 --extra-vars "@playbooks/vars/create_vm.yml" \
 --extra-vars "aws_region=eu-central-1" \
 --extra-vars "vm_ami=ami-0e7e134863fac4946" \
@@ -53,8 +53,9 @@ ansible-navigator run playbooks/create_vm.yml \
 --extra-vars "security_group_id=sg-08814ac6..." \
 --extra-vars "ssh_key_name=my_key" \
 --eev $HOME/.ssh:/home/runner/.ssh \
---penv AWS_ACCESS_KEY \
---penv AWS_SECRET_ACCESS_KEY
+--penv AWS_ACCESS_KEY_ID \
+--penv AWS_SECRET_ACCESS_KEY \
+--penv AWS_SESSION_TOKEN
 ```
 
 #### Create Network Playbooks

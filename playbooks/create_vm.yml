@@ -3,6 +3,8 @@
   hosts: localhost
   connection: local
   gather_facts: false
+  vars_files:
+    - vars/create_vm.yml
   tasks:
     - name: Fail if variables not defined
       ansible.builtin.assert:
