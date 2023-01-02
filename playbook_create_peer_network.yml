@@ -21,7 +21,7 @@
 
     - name: Create Peer Networking Model
       ansible.builtin.import_role:
-        name: roles/manage_direct_peered_networks
+        name: manage_direct_peered_networks
       vars:
         operation: create
 

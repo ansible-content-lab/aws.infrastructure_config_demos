@@ -1,5 +1,5 @@
 ---
-- name: Peer multiple networks using VPC peering
+- name: Delete peer network VPCs and related assets
   hosts: localhost
   connection: local
   gather_facts: false
@@ -15,6 +15,8 @@
           - aws_region is defined
         fail_msg: "Required variables not set"
 
-    - name: Create Peer Networking Model
+    - name: Delete Peer Networking Model
       ansible.builtin.import_role:
-        name: roles/peer_existing_networks
+        name: manage_direct_peered_networks
+      vars:
+        operation: delete
