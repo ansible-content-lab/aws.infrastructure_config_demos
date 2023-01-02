@@ -15,8 +15,8 @@ This content was developed as part of the [Ansible Content Lab for Cloud Content
 
 Click on the role name to be directed to the README specifically for that role.
 
-| Name                                                                                                                                                          | Description                                                                                                                               |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| Name                                                                                                                                                                                              | Description                                                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | [aws.infrastructure_config_demos.manage_direct_peered_networks](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/blob/main/roles/manage_direct_peered_networks/README.md)   | A role to create a VPC networking architecture that includes peer networking DMZ and private networks.                                    |
 | [aws.infrastructure_config_demos.manage_transit_peered_networks](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/blob/main/roles/manage_transit_peered_networks/README.md) | A role to create a hub-and-spoke VPC networking architecture that includes DMZ and private networks.                                      |
 | [aws.infrastructure_config_demos.peer_existing_networks](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/blob/main/roles/peer_existing_networks/README.md)                 | A role to automate the peering of two or more VPCs through direct peering model.                                                          |
@@ -24,8 +24,8 @@ Click on the role name to be directed to the README specifically for that role.
 
 ### Playbooks
 
-| Name                                    | Role(s) Used                           | Description                                                                                                                 |
-|-----------------------------------------|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| Name                                                      | Role(s) Used                           | Description                                                                                                                 |
+| --------------------------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
 | `aws.infrastructure_config_demos.create_peer_network`     | `roles.manage_direct_peered_networks`  | A playbook to create a multi-VPC peer network configuration with DMZ and private networks.                                  |
 | `aws.infrastructure_config_demos.delete_peer_network`     | `roles.manage_direct_peered_networks`  | Deletes AWS resources created in the `create_peer_network` playbook.                                                        |
 | `aws.infrastructure_config_demos.peer_networks`           | `roles.peer_networks`                  | Peer two or more VPCs with VPC peering.                                                                                     |
@@ -67,7 +67,7 @@ To connect to the DMZ EC2 instance, the `ansible_ssh_private_key_file` variable 
 When the following variables are set, then the playbook will also configure the DMZ EC2 instance with the SSH config and a private key to communicate with each other.  This leaves the deployment in an immediately accessible state.
 
 | Variable                                  | Use                                                                                                                |
-|-------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `priv_network_ssh_key_name`               | The AWS key name used for configuring SSH access to EC2 instances on the private VPC deployed in these roles.      |
 | `ansible_ssh_private_key_file_local_path` | The local path to an SSH private key that will be copied to the bastion host.                                      |
 | `ansible_ssh_private_key_file_dest_path`  | The destination path for the SSH key on the bastion host.                                                          |
@@ -123,13 +123,13 @@ Each automation template is equivalent to a playbook in this repository.  Repeat
    * Credentials: `AWS Credential` (You must have an AWS credential in order to use the AWS collections)
    * Variables: (Will differ per playbook)
 
-```yaml
----
-tenancy: default
-aws_profile: default
-instance_type: t2.micro
-instance_name: test_vm
-```
+    ```yaml
+    ---
+    tenancy: default
+    aws_profile: default
+    instance_type: t2.micro
+    instance_name: test_vm
+    ```
 
 4. Click the `Save` button.
 

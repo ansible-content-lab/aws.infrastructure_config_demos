@@ -127,6 +127,6 @@
         lookup: id
         region: "{{ aws_region }}"
         route_table_id: "{{ item }}"
-        routes: "{{ routes | list }}"
+        routes: "{{ routes | list }}" # noqa args[module]
         vpc_id: "{{ source_vpc.vpc_id }}"
       loop: "{{ route_tables }}"
