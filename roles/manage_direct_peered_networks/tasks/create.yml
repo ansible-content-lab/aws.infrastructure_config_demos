@@ -286,11 +286,13 @@
           name: "{{ dmz_instance_ami_filter }}"
           architecture: "{{ dmz_instance_ami_architecture }}"
       register: dmz_amis
+      when: dmz_instance_ami is not defined
 
     - name: Select DMZ instance ami
       set_fact:
         dmz_instance_ami: >
           {{ (dmz_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1] }}
+      when: dmz_instance_ami is not defined
 
     - name: Provision an SSH tunnel VM in the DMZ
       amazon.aws.ec2_instance:
@@ -380,11 +382,13 @@
           name: "{{ priv_network_instance_ami_filter }}"
           architecture: "{{ priv_network_instance_ami_architecture }}"
       register: private_network_amis
+      when: priv_network_instance_ami is not defined
 
     - name: Select private network instance ami
       set_fact:
         priv_network_instance_ami: >
           {{ (private_network_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1] }}
+      when: priv_network_instance_ami is not defined
 
     - name: Provision a test VM in the private network
       amazon.aws.ec2_instance:
