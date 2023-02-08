@@ -291,7 +291,7 @@
     - name: Select DMZ instance ami
       set_fact:
         dmz_instance_ami: >
-          {{ (dmz_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id }}
+          {{ (dmz_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id | trim }}
       when: dmz_instance_ami is not defined
 
     - name: Provision an SSH tunnel VM in the DMZ
@@ -387,7 +387,7 @@
     - name: Select private network instance ami
       set_fact:
         priv_network_instance_ami: >
-          {{ (private_network_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id }}
+          {{ (private_network_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id | trim}}
       when: priv_network_instance_ami is not defined
 
     - name: Provision a test VM in the private network
