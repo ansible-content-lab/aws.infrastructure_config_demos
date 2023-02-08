@@ -3,9 +3,6 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  collections:
-    - amazon.aws
-    - community.aws
   tasks:
     - name: Test direct_peered_networks role
       ansible.builtin.include_tasks:

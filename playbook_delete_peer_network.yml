@@ -3,9 +3,6 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  collections:
-    - amazon.aws
-    - community.aws
   vars_files:
     - vars/main.yml
   tasks:

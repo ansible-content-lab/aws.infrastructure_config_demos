@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - actions
     tags:
       - "v*.*.*"
   pull_request:
@@ -21,7 +22,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install ansible-lint and yamllint
-        run: sudo pip3 install ansible-lint yamllint
+        run: sudo pip3 install ansible ansible-lint yamllint
 
       - name: Run ansiblelint
         run: ansible-lint
