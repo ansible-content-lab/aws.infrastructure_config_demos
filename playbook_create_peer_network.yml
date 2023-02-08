@@ -15,8 +15,6 @@
           - aws_region is defined
           - dmz_ssh_key_name is defined
           - priv_network_ssh_key_name is defined
-          - dmz_instance_ami is defined
-          - priv_network_instance_type is defined
         fail_msg: "Required variables not set"
 
     - name: Create Peer Networking Model
