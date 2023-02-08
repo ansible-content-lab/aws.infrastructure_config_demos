@@ -1,5 +1,0 @@
----
-- hosts: localhost
-  remote_user: root
-  roles:
-    - direct_peered_networks
