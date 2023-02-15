@@ -14,3 +14,4 @@ enable_list:
 
 skip_list:
   - role-name[path]
+  - galaxy[no-changelog]
