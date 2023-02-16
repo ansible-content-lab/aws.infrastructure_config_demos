@@ -1,0 +1,19 @@
+---
+aws_region: us-east-1
+aws_keypair_name: aws-test-key
+aws_instance_size: t2.micro
+tenancy: default
+aws_securitygroup_name: private-network-sg
+aws_vpc_subnet_name: priv-net-private-subnet
+aws_ec2_wait: true
+aws_userdata_template: default
+# Tag Defaults
+vm_name: demo_vm
+vm_deployment: default
+vm_environment: default
+vm_owner: ansible
+vm_purpose: demo
+#AMI Lookup
+aws_image_owners: 309956199498
+aws_image_filter: 'RHEL-8*HVM-*Hourly*'
+aws_image_architecture: x86_64
