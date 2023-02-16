@@ -323,7 +323,7 @@
           - DMZ
       when: existing_dmz_instance.instances is defined and existing_dmz_instance.instances | length > 0
 
-    - name: Lookup DMZ instance ami 
+    - name: Lookup DMZ instance ami
       amazon.aws.ec2_ami_info:
         region: "{{ aws_region }}"
         owners: "{{ dmz_instance_ami_owner }}"
@@ -334,7 +334,7 @@
       when: dmz_instance_ami is not defined
 
     - name: Select DMZ instance ami
-      set_fact:
+      ansible.builtin.set_fact:
         dmz_instance_ami: >
           {{ (dmz_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id | trim }}
       when: dmz_instance_ami is not defined
@@ -419,7 +419,7 @@
           - private
       when: existing_priv_network_instance.instances is defined and existing_priv_network_instance.instances | length > 0
 
-    - name: Lookup private network instance ami 
+    - name: Lookup private network instance ami
       amazon.aws.ec2_ami_info:
         region: "{{ aws_region }}"
         owners: "{{ priv_network_instance_ami_owner }}"
@@ -430,7 +430,7 @@
       when: priv_network_instance_ami is not defined
 
     - name: Select private network instance ami
-      set_fact:
+      ansible.builtin.set_fact:
         priv_network_instance_ami: >
           {{ (private_network_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id | trim }}
       when: priv_network_instance_ami is not defined
