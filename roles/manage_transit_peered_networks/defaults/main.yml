@@ -11,13 +11,11 @@ dmz_instance_name: dmz-ssh-tunnel-vm
 dmz_instance_ami_owner: "{{ omit }}"
 dmz_instance_ami_architecture: x86_64
 dmz_instance_ami_filter: RHEL-8*HVM-*Hourly*
-#dmz_instance_ami: undef
 priv_network_instance_type: t2.micro
 priv_network_instance_name: priv-network-vm
 priv_network_instance_ami_owner: "{{ omit }}"
 priv_network_instance_ami_architecture: x86_64
 priv_network_instance_ami_filter: RHEL-8*HVM-*Hourly*
-#priv_network_instance_ami: undef
 transit_gateway_asn: 64514
 transit_gateway_auto_associate: true
 transit_gateway_auto_propagate: true

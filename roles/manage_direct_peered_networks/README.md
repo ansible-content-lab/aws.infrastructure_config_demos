@@ -39,6 +39,7 @@ priv_network_instance_ami_owner: "{{ omit }}"
 priv_network_instance_ami_architecture: x86_64
 priv_network_instance_ami_filter: RHEL-8*HVM-*Hourly*
 priv_network_instance_name: priv-network-vm
+priv_natwork_instance_ami: undef # use this variable to override the AMI lookup
 ```
 
 ### Infrastructure
