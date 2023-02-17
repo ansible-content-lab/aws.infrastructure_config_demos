@@ -1,0 +1,18 @@
+---
+- name: create report bucket
+  amazon.aws.s3_bucket:
+    name: reports
+    region: "{{ aws_region }}"
+    state: present
+
+- name: configure bucket for website
+  community.aws.s3_website:
+    name: reports
+    state: present
+
+- name: put index.html
+  amazon.aws.s3_object:
+    bucket: reports
+    object: index.html
+    src: files/index.html
+    mode: put
