@@ -24,10 +24,11 @@
 - name: put website files
   amazon.aws.s3_object:
     bucket: "{{ aws_bucket_name }}"
-    object: /
-    src: ../files
+    object: "{{ item.path.split('/')[-1] }}"
+    src: "{{ item.path }}"
     mode: put
     permission: "{{ aws_bucket_permissions }}"
+  loop: web_files
 
 - name: put vpc_report
   amazon.aws.s3_object:
