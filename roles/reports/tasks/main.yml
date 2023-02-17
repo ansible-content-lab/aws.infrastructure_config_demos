@@ -16,3 +16,8 @@
     object: index.html
     src: files/index.html
     mode: put
+    permission: "{{ aws_bucket_permissions }}"
+  register: bucket_put
+
+- debug:
+    msg: "{{ bucket_put }}"
