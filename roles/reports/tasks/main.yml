@@ -4,6 +4,7 @@
     name: "{{ aws_bucket_name }}"
     region: "{{ aws_region }}"
     state: present
+    acl: "{{ aws_bucket_permissions }}"
 
 - name: configure bucket for website
   community.aws.s3_website:
