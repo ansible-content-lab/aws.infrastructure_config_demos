@@ -1,2 +1,4 @@
 ---
 aws_region: us-east-1
+aws_bucket_prefix: "{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY_ID')[1:5] }}"
+aws_bucket_name: "{{ aws_bucket_prefix }}-reports"
