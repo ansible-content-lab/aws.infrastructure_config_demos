@@ -34,7 +34,7 @@
   amazon.aws.s3_object:
     bucket: "{{ aws_bucket_name }}"
     object: vpc_report.html
-    src: "{{ lookup('template', 'vpc_report.j2')}}"
+    content: "{{ lookup('template', 'vpc_report.j2')}}"
     mode: put
     permission: "{{ aws_bucket_permissions }}"
 
