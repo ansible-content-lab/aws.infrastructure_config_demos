@@ -28,7 +28,7 @@
     src: "{{ item.path }}"
     mode: put
     permission: "{{ aws_bucket_permissions }}"
-  loop: web_files.files
+  loop: "{{ web_files.files }}"
 
 - name: put vpc_report
   amazon.aws.s3_object:
