@@ -1,4 +1,5 @@
 ---
+
 - name: create report bucket
   amazon.aws.s3_bucket:
     name: "{{ aws_bucket_name }}"
@@ -11,6 +12,25 @@
     name: "{{ aws_bucket_name }}"
     state: present
 
+- name: Include tasks
+  ansible.builtin.include_tasks: "vpc.yml"
+
+- name: put website files
+  amazon.aws.s3_object:
+    bucket: "{{ aws_bucket_name }}"
+    object: /
+    src: files
+    mode: put
+    permission: "{{ aws_bucket_permissions }}"
+
+- name: put vpc_report
+  amazon.aws.s3_object:
+    bucket: "{{ aws_bucket_name }}"
+    object: vpc_report.html
+    src: "{{ lookup('template', 'vpc_report.j2')}}"
+    mode: put
+    permission: "{{ aws_bucket_permissions }}"
+
 - name: put index.html
   amazon.aws.s3_object:
     bucket: "{{ aws_bucket_name }}"
@@ -18,7 +38,6 @@
     src: files/index.html
     mode: put
     permission: "{{ aws_bucket_permissions }}"
-  register: bucket_put
 
 - debug:
-    msg: "{{ bucket_put }}"
+    msg: "Bucket URL: http://{{ aws_bucket_name }}.s3-website.{{ aws_region }}.amazonaws.com"
