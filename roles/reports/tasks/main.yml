@@ -37,6 +37,7 @@
     content: "{{ lookup('template', 'vpc_report.j2')}}"
     mode: put
     permission: "{{ aws_bucket_permissions }}"
+    metadata: 'Content-Type=text/html'
 
 - name: put index.html
   amazon.aws.s3_object:
