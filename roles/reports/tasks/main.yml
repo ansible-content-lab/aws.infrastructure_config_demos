@@ -15,25 +15,15 @@
 - name: Include tasks
   ansible.builtin.include_tasks: "vpc.yml"
 
-- name: find website files
-  ansible.builtin.find:
-    paths: "{{ role_path }}/files"
-    recurse: yes
-  register: web_files
-
 - name: put website files
-  amazon.aws.s3_object:
+  community.aws.s3_sync:
     bucket: "{{ aws_bucket_name }}"
-    object: "{{ item.path.split('/')[-1] }}"
-    src: "{{ item.path }}"
-    mode: put
-    permission: "{{ aws_bucket_permissions }}"
-  loop: "{{ web_files.files }}"
+    file_root: ../files
 
-- name: put vpc_report
+- name: put vpc-report
   amazon.aws.s3_object:
     bucket: "{{ aws_bucket_name }}"
-    object: vpc_report.html
+    object: vpc-report.html
     content: "{{ lookup('template', 'vpc_report.j2')}}"
     mode: put
     permission: "{{ aws_bucket_permissions }}"
