@@ -336,14 +336,14 @@
     - name: Select DMZ instance ami
       ansible.builtin.set_fact:
         dmz_instance_ami: >
-          {{ (dmz_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id | trim }}
+          {{ (dmz_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id }}
       when: dmz_instance_ami is not defined
 
     - name: Provision an SSH tunnel VM in the DMZ
       amazon.aws.ec2_instance:
         count: 1
         image:
-          id: "{{ dmz_instance_ami }}"
+          id: "{{ dmz_instance_ami | trim }}"
         instance_type: "{{ dmz_instance_type }}"
         key_name: "{{ dmz_ssh_key_name }}"
         name: "{{ dmz_instance_name }}"
@@ -432,14 +432,14 @@
     - name: Select private network instance ami
       ansible.builtin.set_fact:
         priv_network_instance_ami: >
-          {{ (private_network_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id | trim }}
+          {{ (private_network_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id }}
       when: priv_network_instance_ami is not defined
 
     - name: Provision a test VM in the private network
       amazon.aws.ec2_instance:
         count: 1
         image:
-          id: "{{ priv_network_instance_ami }}"
+          id: "{{ priv_network_instance_ami | trim }}"
         instance_type: "{{ priv_network_instance_type }}"
         key_name: "{{ priv_network_ssh_key_name }}"
         name: "{{ priv_network_instance_name }}"
