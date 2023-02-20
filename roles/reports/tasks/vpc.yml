@@ -18,3 +18,18 @@
   amazon.aws.aws_caller_info:
     region: "{{ aws_region }}"
   register: whoami
+
+- name: save username of AWS user
+  ansible.builtin.set_fact:
+    aws_user: '{{ whoami.arn.split("/")[-1] }}'
+    py_cmd: >-
+      {{ lookup('pipe', ansible_playbook_python ~ ' -c "import boto3; print(boto3.__version__)"') }}
+
+- name: put vpc-report
+  amazon.aws.s3_object:
+    bucket: "{{ aws_bucket_name }}"
+    object: vpc-report.html
+    content: "{{ lookup('template', 'vpc_report.j2')}}"
+    mode: put
+    permission: "{{ aws_bucket_permissions }}"
+    metadata: 'Content-Type=text/html'
