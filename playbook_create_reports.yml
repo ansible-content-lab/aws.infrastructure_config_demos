@@ -2,6 +2,8 @@
 - hosts: localhost
   connection: local
   gather_facts: false
+  vars:
+    aws_report: tags
 
   tasks:
   - include_role:
