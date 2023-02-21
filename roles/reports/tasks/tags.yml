@@ -1,0 +1,14 @@
+---
+- name: Retrieve instance information
+  amazon.aws.ec2_instance_info:
+    filters: "{{ aws_instance_filters }}"
+  register: ec2_instance_info
+
+- name: Put tags-report
+  amazon.aws.s3_object:
+    bucket: "{{ aws_bucket_name }}"
+    object: tag-report.html
+    content: "{{ lookup('template', 'tags_report.j2') }}"
+    mode: put
+    permission: "{{ aws_bucket_permissions }}"
+    metadata: 'Content-Type=text/html'
