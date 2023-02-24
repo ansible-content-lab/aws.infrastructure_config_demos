@@ -1,0 +1,107 @@
+---
+- name: Check if the VM is already provisioned
+  amazon.aws.ec2_instance_info:
+    filters:
+      "tag:Name": "{{ vm_name }}"
+      "tag:blueprint": "{{ vm_blueprint }}"
+      "tag:environment": "{{ vm_environment }}"
+      "tag:deployment": "{{ vm_deployment }}"
+      "tag:owner": "{{ vm_owner }}"
+      "tag:purpose": "{{ vm_purpose }}"
+      "tag:ansible-role": create_vm
+      "tag:ansible-collection": aws.infrastructure_config_demos
+      instance-state-name:
+        - pending
+        - running
+        - shutting-down
+        - stopping
+        - stopped
+    region: "{{ aws_region }}"
+  register: existing_vm
+
+- name: Output the IP of existing VM
+  ansible.builtin.debug:
+    msg:
+      - "Public IP for new instance: {{ existing_vm.instances[0].public_ip_address }}"
+      - "Private IP for new instance: {{ existing_vm.instances[0].private_ip_address }}"
+  when: existing_vm.instances is defined and existing_vm.instances | length > 0
+
+- name: Set stats for Controller of existing VM
+  ansible.builtin.set_stats:
+    data:
+      priv_network_private_ip: "{{ existing_vm.instances[0].private_ip_address }}"
+      public_ip: "{{ existing_vm.instances[0].public_ip_address }}"
+  when: existing_vm.instances is defined and existing_vm.instances | length > 0
+
+- name: Create Instance
+  when: existing_vm.instances | length == 0
+  block:
+    - name: Get subnet info
+      amazon.aws.ec2_vpc_subnet_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:Name": "{{ aws_vpc_subnet_name }}"
+      register: aws_subnet
+      when: aws_subnet_id is not defined
+
+    - name: Save subnet id
+      ansible.builtin.set_fact:
+        aws_subnet_id: "{{ aws_subnet.subnets | map(attribute='id') | list | last }}"
+      when: aws_subnet_id is not defined
+
+    - name: Find ami
+      amazon.aws.ec2_ami_info:
+        region: "{{ aws_region }}"
+        owners: "{{ aws_image_owners | default(omit) }}"
+        filters:
+          name: "{{ aws_image_filter }}"
+          architecture: "{{ aws_image_architecture | default(omit) }}"
+      register: vm_amis
+      when: aws_instance_ami is not defined
+
+    - name: Save ami
+      ansible.builtin.set_fact:
+        aws_instance_ami: >
+          {{ (vm_amis.images | selectattr('name', 'defined') | sort(attribute='creation_date'))[-1].image_id }}
+      when: aws_instance_ami is not defined
+
+    - name: Create instance
+      amazon.aws.ec2_instance:
+        filters:
+          "tag:Name": "{{ vm_name }}"
+        network:
+          assign_public_ip: true
+          delete_on_termination: true
+        tenancy: "{{ tenancy }}"
+        key_name: "{{ aws_keypair_name }}"
+        instance_type: "{{ aws_instance_size }}"
+        image_id: "{{ aws_instance_ami | trim }}"
+        region: "{{ aws_region }}"
+        security_group: "{{ aws_securitygroup_name }}"
+        tags:
+          Name: "{{ vm_name }}"
+          blueprint: "{{ vm_blueprint }}"
+          environment: "{{ vm_environment }}"
+          deployment: "{{ vm_deployment }}"
+          owner: "{{ vm_owner }}"
+          purpose: "{{ vm_purpose }}"
+          ansible-role: create_vm
+          ansible-collection: aws.infrastructure_config_demos
+        wait: "{{ aws_ec2_wait }}"
+        vpc_subnet_id: "{{ aws_subnet_id }}"
+        user_data: "{{ lookup('template', aws_userdata_template + '.j2', template_vars=dict(vm_name=vm_name)) }}"
+      register: aws_ec2_instance
+
+    - name: Output the IP of new VM
+      ansible.builtin.debug:
+        msg:
+          - "Public IP for new instance: {{ aws_ec2_instance.instances[0].public_ip_address | default('') }}"
+          - "Private IP for new instance: {{ aws_ec2_instance.instances[0].private_ip_address | default('') }}"
+      when: aws_ec2_instance.instances is defined and aws_ec2_instance.instances | length > 0
+
+    - name: Set stats for Controller of new VM
+      ansible.builtin.set_stats:
+        data:
+          priv_network_private_ip: "{{ aws_ec2_instance.instances[0].private_ip_address | default('') }}"
+          public_ip: "{{ aws_ec2_instance.instances[0].public_ip_address | default('') }}"
+      when: aws_ec2_instance.instances is defined and aws_ec2_instance.instances | length > 0

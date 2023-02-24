@@ -4,82 +4,16 @@
   connection: local
   gather_facts: false
   vars_files:
-    - vars/create_vm.yml
+    - "vm_blueprints/{{vm_blueprint}}.yml"
   tasks:
     - name: Fail if variables not defined
       ansible.builtin.assert:
         that:
-          - tenancy is defined
           - aws_region is defined
-          - vm_ami is defined
-          - security_group_id is defined
-          - ssh_key_name is defined
-          - vpc_subnet_id is defined
-          - security_group_id is defined
+          - aws_keypair_name is defined
+          - aws_instance_size is defined
         fail_msg: "Required variables not set"
 
-    - name: Check if a demo VM is already provisioned
-      amazon.aws.ec2_instance_info:
-        filters:
-          "tag:deployment": ansible
-          "tag:purpose": create-vm-demo
-          "tag:ansible-role": none
-          "tag:ansible-collection": aws.infrastructure_config_demos
-          instance-state-name:
-            - pending
-            - running
-            - shutting-down
-            - stopping
-            - stopped
-        region: "{{ aws_region }}"
-      register: existing_vm
-
-    - name: Output the IP of existing VM
-      ansible.builtin.debug:
-        msg: "Public IP for new instance: {{ existing_vm.instances[0].public_ip_address }}"
-      when: existing_vm.instances is defined and existing_vm.instances | length > 0
-
-    - name: Set stats for Controller of existing VM
-      ansible.builtin.set_stats:
-        data:
-          priv_network_private_ip: "{{ existing_vm.instances[0].private_ip_address }}"
-          public_ip: "{{ existing_vm.instances[0].public_ip_address }}"
-      when: existing_vm.instances is defined and existing_vm.instances | length > 0
-
-    - name: Provision a test VM
-      amazon.aws.ec2_instance:
-        count: 1
-        image:
-          id: "{{ vm_ami }}"
-        instance_type: "{{ instance_type }}"
-        key_name: "{{ ssh_key_name }}"
-        name: "{{ instance_name | default('create_vm_test') }}"
-        network:
-          assign_public_ip: "{{ public_ip | default(True) }}"
-          delete_on_termination: true
-        region: "{{ aws_region }}"
-        security_groups:
-          - "{{ security_group_id }}"
-        state: running
-        tags:
-          deployment: ansible
-          purpose: create-vm-demo
-          ansible-role: none
-          ansible-collection: aws.infrastructure_config_demos
-        tenancy: "{{ tenancy }}" # noqa args[module]
-        vpc_subnet_id: "{{ vpc_subnet_id }}"
-        wait: true
-      register: new_ec2_instance
-      when: existing_vm.instances is defined and existing_vm.instances | length == 0
-
-    - name: Output the IP of new VM
-      ansible.builtin.debug:
-        msg: "Public IP for new instance: {{ new_ec2_instance.instances[0].public_ip_address }}"
-      when: new_ec2_instance.instances is defined and new_ec2_instance.instances | length > 0
-
-    - name: Set stats for Controller of new VM
-      ansible.builtin.set_stats:
-        data:
-          priv_network_private_ip: "{{ new_ec2_instance.instances[0].private_ip_address }}"
-          public_ip: "{{ new_ec2_instance.instances[0].public_ip_address }}"
-      when: new_ec2_instance.instances is defined and new_ec2_instance.instances | length > 0
+    - name: Include create vm role
+      ansible.builtin.include_role:
+        name: create_vm
