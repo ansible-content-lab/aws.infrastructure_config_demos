@@ -14,6 +14,5 @@ vm_environment: default
 vm_owner: ansible
 vm_purpose: demo
 # AMI Lookup
-aws_image_owners: 309956199498
 aws_image_filter: 'RHEL-8*HVM-*Hourly*'
 aws_image_architecture: x86_64
