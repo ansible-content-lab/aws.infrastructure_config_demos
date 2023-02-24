@@ -10,9 +10,13 @@ on:
       - "v*.*.*"
   pull_request:
     types:
+      - assigned
       - opened
       - edited
       - reopened
+      - synchronize
+      - ready_for_review
+      - review_requested
 
 jobs:
   build:

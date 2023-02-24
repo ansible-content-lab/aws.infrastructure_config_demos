@@ -2,3 +2,4 @@
 inventory
 env
 *.log
+*.orig
