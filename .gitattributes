@@ -1,0 +1,23 @@
+*.md linguist-documentation
+*.yml linguist-detectable=true
+*.yaml linguist-detectable=true
+*.j2 linguist-detectable=true
+*.css linguist-detectable=true
+hosts text
+
+# Graphics
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.tif binary
+*.tiff binary
+*.ico binary
+*.svg binary
+*.eps binary
+
+# Scripts
+*.bash text
+*.fish text
+*.sh text
+*.zsh text
