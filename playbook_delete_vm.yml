@@ -13,8 +13,9 @@
     - name: Check if a demo VM is already provisioned
       amazon.aws.ec2_instance_info:
         filters:
-          "tag:Name": demo_vm
-          "tag:=owner": ansible
+          "tag:deployment": default
+#          "tag:Name": demo_vm
+#          "tag:=owner": ansible
           "tag:purpose": demo
           "tag:ansible-role": create_vm
           "tag:ansible-collection": aws.infrastructure_config_demos
