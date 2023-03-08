@@ -29,7 +29,7 @@
 
     - name: Display the exisiting vm
       ansible.builtin.debug:
-        var: existing_vm
+        msg: " {{ existing_vm }}"
 
     - name: Delete VM
       amazon.aws.ec2_instance:
