@@ -14,8 +14,6 @@
       amazon.aws.ec2_instance_info:
         filters:
           "tag:deployment": default
-#          "tag:Name": demo_vm
-#          "tag:=owner": ansible
           "tag:purpose": demo
           "tag:ansible-role": create_vm
           "tag:ansible-collection": aws.infrastructure_config_demos
@@ -27,10 +25,6 @@
             - stopped
         region: "{{ aws_region }}"
       register: existing_vm
-
-    - name: Display the exisiting vm
-      ansible.builtin.debug:
-        msg: "{{ existing_vm }}"
 
     - name: Delete VM
       amazon.aws.ec2_instance:
