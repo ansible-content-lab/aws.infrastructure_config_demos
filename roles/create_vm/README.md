@@ -7,6 +7,7 @@ This Ansible role contains repeatable steps to provision new VMs into an existin
 The following variables are defined as defaults and are intended to be overridden by the user for different VM deployments.
 
 ### Required
+
 ```yaml
 ---
 aws_region: us-east-1 # The region in which the resources are deployed
@@ -28,6 +29,7 @@ vm_purpose: demo
 ```
 
 ### Other Variables
+
 ```yaml
 tenancy: default
 aws_securitygroup_name: private-network-sg # Name of security group to associate with the new VM
@@ -37,6 +39,7 @@ aws_userdata_template: default # userdata template to use for VM creation. defau
 ```
 
 ## Example Playbook
+
 ```yaml
 ---
 - name: Create VM Demo
