@@ -4,3 +4,7 @@ repos:
     rev: v6.14.0a0
     hooks:
       - id: ansible-lint
+  - repo: https://github.com/igorshubovych/markdownlint-cli.git
+    rev: v0.35.0
+    hooks:
+      - id: markdownlint
