@@ -13,7 +13,7 @@ tags:
   - "cloud"
   - "aws"
 dependencies:
-  amazon.aws: ">=6.1.0"
+  amazon.aws: ">=6.2.0"
   amazon.cloud: ">=0.4.0"
   community.aws: ">=6.1.0"
 repository: https://github.com/ansible-content-lab/aws.infrastructure_config_demos
