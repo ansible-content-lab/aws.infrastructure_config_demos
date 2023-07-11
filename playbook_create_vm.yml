@@ -4,14 +4,15 @@
   connection: local
   gather_facts: false
   vars_files:
-    - "vm_blueprints/{{vm_blueprint}}.yml"
+    - "vars/vm_blueprints/{{vm_blueprint}}.yml"
   tasks:
     - name: Fail if variables not defined
       ansible.builtin.assert:
         that:
-          - aws_region is defined
-          - aws_keypair_name is defined
-          - aws_instance_size is defined
+          - create_vm_aws_vpc_subnet_name is defined
+          - create_vm_aws_keypair_name is defined
+          - create_vm_aws_securitygroup_name is defined
+          - create_vm_aws_vpc_subnet_name is defined
         fail_msg: "Required variables not set"
 
     - name: Include create vm role
