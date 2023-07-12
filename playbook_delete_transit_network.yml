@@ -16,4 +16,4 @@
       ansible.builtin.import_role:
         name: manage_transit_peered_networks
       vars:
-        operation: delete
+        manage_transit_peered_networks_operation: delete

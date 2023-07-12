@@ -11,7 +11,7 @@
       ansible.builtin.import_role:
         name: aws.infrastructure_config_demos.manage_direct_peered_networks
       vars:
-        operation: create
+        manage_direct_peered_networks_operation: create
 
     - name: Check VPCs
       amazon.aws.ec2_vpc_net_info:
@@ -57,6 +57,6 @@
   always:
     - name: Delete Peer Network
       ansible.builtin.import_role:
-        name: aws.infrastructure_config_demos.direct_peered_networks
+        name: aws.infrastructure_config_demos.manage_direct_peered_networks
       vars:
-        operation: delete
+        manage_direct_peered_networks_operation: delete

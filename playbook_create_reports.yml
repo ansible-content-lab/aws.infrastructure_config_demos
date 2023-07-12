@@ -4,8 +4,7 @@
   connection: local
   gather_facts: false
   vars:
-    aws_report: tags
-
+    reports_aws_report: tags
   tasks:
     - name: Include reports role
       ansible.builtin.include_role:
