@@ -5,4 +5,4 @@
   when: operation not in ['create', 'delete']
 
 - name: Include tasks
-  ansible.builtin.include_tasks: "{{ operation }}.yml"
+  ansible.builtin.include_tasks: "{{ manage_direct_peered_networks_operation }}.yml"
