@@ -16,4 +16,4 @@
       ansible.builtin.import_role:
         name: manage_direct_peered_networks
       vars:
-        operation: delete
+        manage_direct_peered_networks_operation: delete

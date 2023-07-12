@@ -18,7 +18,7 @@
       ansible.builtin.import_role:
         name: manage_transit_peered_networks
       vars:
-        operation: create
+        manage_transit_peered_networks_operation: create
 
 - name: Configure EC2 instances created in the DMZ for SSH access to private hosts
   hosts: DMZ
