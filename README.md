@@ -24,16 +24,16 @@ Click on the role name to be directed to the README specifically for that role.
 
 ### Playbooks
 
-| Name                                   | Role(s) Used                           | Description                                                                                                                 |
-| -------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `playbook_create_peer_network.yml`     | `roles.manage_direct_peered_networks`  | A playbook to create a multi-VPC peer network configuration with DMZ and private networks.                                  |
-| `playbook_delete_peer_network.yml`     | `roles.manage_direct_peered_networks`  | Deletes AWS resources created in the `create_peer_network` playbook.                                                        |
-| `playbook_peer_networks.yml`           | `roles.peer_networks`                  | Peer two or more VPCs with VPC peering.                                                                                     |
-| `playbook_create_transit_network.yml`  | `roles.manage_transit_peered_networks` | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks. |
-| `playbook_delete_transit_network.yml`  | `roles.manage_transit_peered_networks` | Deletes AWS resources created in the `create_transit_network` playbook.                                                     |
-| `playbook_peer_to_transit_network.yml` | `roles.peer_transit_network`           | A playbook to execute the Transit Gateway peering operation in the role used.                                               |
-| `playbook_create_vm.yml`               | N/A                                    | Simple playbook to create an AWS VM.                                                                                        |
-| `playbook_delete_vm.yml`               | N/A                                    | Deletes the VM created in the `create_vm` playbook.                                                                         |
+| Name                          | Role(s) Used                           | Description                                                                                                                 |
+| ----------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `create_peer_network.yml`     | `roles.manage_direct_peered_networks`  | A playbook to create a multi-VPC peer network configuration with DMZ and private networks.                                  |
+| `delete_peer_network.yml`     | `roles.manage_direct_peered_networks`  | Deletes AWS resources created in the `create_peer_network` playbook.                                                        |
+| `peer_networks.yml`           | `roles.peer_networks`                  | Peer two or more VPCs with VPC peering.                                                                                     |
+| `create_transit_network.yml`  | `roles.manage_transit_peered_networks` | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks. |
+| `delete_transit_network.yml`  | `roles.manage_transit_peered_networks` | Deletes AWS resources created in the `create_transit_network` playbook.                                                     |
+| `peer_to_transit_network.yml` | `roles.peer_transit_network`           | A playbook to execute the Transit Gateway peering operation in the role used.                                               |
+| `create_vm.yml`               | N/A                                    | Simple playbook to create an AWS VM.                                                                                        |
+| `delete_vm.yml`               | N/A                                    | Deletes the VM created in the `create_vm` playbook.                                                                         |
 <!--end collection content-->
 
 #### VM Playbooks
@@ -41,7 +41,7 @@ Click on the role name to be directed to the README specifically for that role.
 The `aws.infrastructure_config_demos.create_vm` and `aws.infrastructure_config_demos.delete_vm` playbooks demonstrate how you can construct automation to deploy AWS resources that have dependencies on others.  The more complex networking roles and playbooks automate building all of the resources, but these playbooks assume that you have existing infrastructure (VPCs, security groups, SSH keys, etc.) that you want to leverage to deploy the EC2 instance.  The command below shows how you can use Ansible Navigator to deploy the instance with variables being set both in var files and directly in the CLI.
 
 ```yaml
-ansible-navigator run playbook_create_vm.yml \
+ansible-navigator run aws.infrastructure_config_demos.create_vm \
 --pae false \
 --mode stdout \
 --ee true \
