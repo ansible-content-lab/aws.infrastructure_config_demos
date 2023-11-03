@@ -1,7 +1,7 @@
 ---
 name: Validation CI
 
-on:
+"on":
   push:
     branches:
       - main
@@ -23,8 +23,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install ansible-lint and yamllint
+      - name: Install pre-commit
         run: sudo pip3 install pre-commit
 
-      - name: Run ansiblelint
+      - name: Run pre-commit tests
         run: pre-commit run
