@@ -6,7 +6,6 @@
   become: false
   vars_files:
     - vars/main.yml
-    - vars/create_vpc.yml
   tasks:
     - name: Get VPC
       amazon.aws.ec2_vpc_net_info:
