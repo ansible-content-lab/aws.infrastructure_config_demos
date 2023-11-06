@@ -12,5 +12,5 @@
         fail_msg: "Required variables not set"
 
     - name: Create Peer Networking Model
-      ansible.builtin.import_role:
-        name: peer_transit_network
+      ansible.builtin.include_role:
+        name: lab.aws_infrastructure_config_demos.peer_transit_network

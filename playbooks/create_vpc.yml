@@ -1,0 +1,58 @@
+---
+- name: Create a VPC and subnets
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  vars_files:
+    - vars/create_vpc.yml
+  tasks:
+    - name: Create VPC
+      block:
+        - name: Create VPC
+          amazon.aws.ec2_vpc_net:
+            name: vpc-demo
+            cidr_block: "{{ vpc_cidr }}"
+            purge_tags: false
+            region: "{{ region }}"
+            state: present
+            tags:
+              Name: vpc-demo
+              purpose: ansible-automation-platform
+              environment: aap
+              deployment: "aap-infrastructure-{{ deployment_id }}"
+          register: vpc
+          tags:
+            - network
+
+        - name: Save VPC id
+          ansible.builtin.set_fact:
+            vpc_id: "{{ vpc.vpc.id }}"
+          when: vpc is defined
+          tags:
+            - network
+
+    - name: Create subnets
+      block:
+        - name: Create subnets
+          amazon.aws.ec2_vpc_subnet:
+            vpc_id: "{{ vpc_id }}"
+            cidr: "{{ item.cidr }}"
+            region: "{{ region }}"
+            az: "{{ item.az }}"
+            state: present
+            tags:
+              Name: "vpc-demo-subnet-{{ item.name }}"
+              purpose: ansible-automation-platform
+              environment: aap
+          loop: "{{ vpc_subnets }}"
+          register: subnets
+          tags:
+            - network
+
+        - name: Save subnet ids
+          ansible.builtin.set_fact:
+            subnet_ids: "{{ subnets.results | map(attribute='subnet.id') | list }}"
+          when: subnets is defined
+          tags:
+            - network

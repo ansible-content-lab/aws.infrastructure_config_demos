@@ -8,8 +8,8 @@
 - name: Test Peer Network Deployment
   block:
     - name: Create Peer Network
-      ansible.builtin.import_role:
-        name: aws.infrastructure_config_demos.manage_direct_peered_networks
+      ansible.builtin.include_role:
+        name: lab.aws_infrastructure_config_demos..manage_direct_peered_networks
       vars:
         manage_direct_peered_networks_operation: create
 
@@ -56,7 +56,7 @@
 
   always:
     - name: Delete Peer Network
-      ansible.builtin.import_role:
-        name: aws.infrastructure_config_demos.manage_direct_peered_networks
+      ansible.builtin.include_role:
+        name: lab.aws_infrastructure_config_demos..manage_direct_peered_networks
       vars:
         manage_direct_peered_networks_operation: delete
