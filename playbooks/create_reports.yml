@@ -8,4 +8,4 @@
   tasks:
     - name: Include reports role
       ansible.builtin.include_role:
-        name: reports
+        name: lab.aws_infrastructure_config_demos.reports

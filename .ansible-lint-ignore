@@ -1,3 +1,0 @@
-roles/reports/tasks/main.yml args[module]
-roles/reports/tasks/tags.yml args[module]
-roles/reports/tasks/vpc.yml args[module]

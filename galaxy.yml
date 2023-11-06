@@ -1,7 +1,7 @@
 ---
-namespace: aws
-name: infrastructure_config_demos
-version: 2.1.0
+namespace: lab
+name: aws_infrastructure_config_demos
+version: 3.0.0
 readme: README.md
 authors:
   - Scott Harwell <sharwell@redhat.com>
@@ -13,9 +13,9 @@ tags:
   - "cloud"
   - "aws"
 dependencies:
-  amazon.aws: ">=6.2.0"
+  amazon.aws: ">=6.5.0"
   amazon.cloud: ">=0.4.0"
-  community.aws: ">=6.1.0"
+  community.aws: ">=6.3.0"
 repository: https://github.com/ansible-content-lab/aws.infrastructure_config_demos
 documentation: https://github.com/ansible-content-lab/aws.infrastructure_config_demos
 homepage: https://github.com/ansible-content-lab/aws.infrastructure_config_demos

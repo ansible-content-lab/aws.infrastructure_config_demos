@@ -1,0 +1,15 @@
+---
+vpc_cidr: 172.16.0.0/22
+vpc_subnets:
+  - name: vnet1
+    cidr: 172.16.0.0/24
+    az: us-east-1a
+  - name: vnet2
+    cidr: 172.16.1.0/24
+    az: us-east-1b
+  - name: vnet3
+    cidr: 172.16.2.0/24
+    az: us-east-1c
+  - name: vnet4
+    cidr: 172.16.3.0/24
+    az: us-east-1d

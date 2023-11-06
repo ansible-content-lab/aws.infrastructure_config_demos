@@ -8,8 +8,8 @@
 - name: Test Transit Network Deployment
   block:
     - name: Create Transit Network
-      ansible.builtin.import_role:
-        name: aws.infrastructure_config_demos.manage_transit_peered_networks
+      ansible.builtin.include_role:
+        name: lab.aws_infrastructure_config_demos..manage_transit_peered_networks
       vars:
         manage_transit_peered_networks_operation: create
 
@@ -72,7 +72,7 @@
 
   always:
     - name: Delete Transit Network
-      ansible.builtin.import_role:
-        name: aws.infrastructure_config_demos.manage_transit_peered_networks
+      ansible.builtin.include_role:
+        name: lab.aws_infrastructure_config_demos..manage_transit_peered_networks
       vars:
         manage_transit_peered_networks_operation: delete
