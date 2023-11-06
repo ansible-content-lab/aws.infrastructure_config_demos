@@ -1,8 +1,8 @@
-[![Validation CI](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/actions/workflows/validate.yml/badge.svg)](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/actions/workflows/validate.yml)
+[![Validation CI](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/actions/workflows/validate.yml/badge.svg)](https://github.com/ansible-content-lab/lab.aws_infrastructure_config_demos/actions/workflows/validate.yml)
 
-# Ansible Collection - aws.infrastructure_config_demos
+# Ansible Collection - lab.aws_infrastructure_config_demos
 
-This repository hosts the `aws.infrastructure_config_demos` Ansible Collection.
+This repository hosts the `lab.aws_infrastructure_config_demos` Ansible Collection.
 
 The collection includes a variety of Ansible roles and playbook to help automate the management of resources on AWS.
 
@@ -10,38 +10,37 @@ This content was developed as part of the [Ansible Content Lab for Cloud Content
 
 ## Included Content
 
-<!--start collection content-->
 ### Roles
 
 Click on the role name to be directed to the README specifically for that role.
 
-| Name                                                                                                                                                                                              | Description                                                                                                                               |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| [aws.infrastructure_config_demos.create_vm](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/blob/main/roles/create_vm/README.md)                                           | A role to create AWS virtual machines.                                                                                                    |
-| [aws.infrastructure_config_demos.manage_transit_peered_networks](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/blob/main/roles/manage_transit_peered_networks/README.md) | A role to create a hub-and-spoke VPC networking architecture that includes DMZ and private networks.                                      |
-| [aws.infrastructure_config_demos.peer_existing_networks](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/blob/main/roles/peer_existing_networks/README.md)                 | A role to automate the peering of two or more VPCs through direct peering model.                                                          |
-| [aws.infrastructure_config_demos.peer_transit_network](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/blob/main/roles/peer_transit_network/README.md)                     | Peers a VPC into an AWS transit gateway and configures routing rules across all attached VPCs to allow traffic to the newly attached VPC. |
+| Name                                                                                                                                                                                                  | Description                                                                                                                               |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| [lab.aws_infrastructure_config_demos.create_vm](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/blob/main/roles/create_vm/README.md)                                           | A role to create AWS virtual machines.                                                                                                    |
+| [lab.aws_infrastructure_config_demos.manage_transit_peered_networks](https://github.com/ansible-content-lab/aws.infrastructure_config_demos/blob/main/roles/manage_transit_peered_networks/README.md) | A role to create a hub-and-spoke VPC networking architecture that includes DMZ and private networks.                                      |
+| [aws.infrastructure_config_demos.peer_existing_networks](https://github.com/ansible-content-lab/lab.aws_infrastructure_config_demos/blob/main/roles/peer_existing_networks/README.md)                 | A role to automate the peering of two or more VPCs through direct peering model.                                                          |
+| [aws.infrastructure_config_demos.peer_transit_network](https://github.com/ansible-content-lab/lab.aws_infrastructure_config_demos/blob/main/roles/peer_transit_network/README.md)                     | Peers a VPC into an AWS transit gateway and configures routing rules across all attached VPCs to allow traffic to the newly attached VPC. |
 
 ### Playbooks
 
-| Name                          | Role(s) Used                           | Description                                                                                                                 |
-| ----------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `create_peer_network.yml`     | `roles.manage_direct_peered_networks`  | A playbook to create a multi-VPC peer network configuration with DMZ and private networks.                                  |
-| `delete_peer_network.yml`     | `roles.manage_direct_peered_networks`  | Deletes AWS resources created in the `create_peer_network` playbook.                                                        |
-| `peer_networks.yml`           | `roles.peer_networks`                  | Peer two or more VPCs with VPC peering.                                                                                     |
-| `create_transit_network.yml`  | `roles.manage_transit_peered_networks` | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks. |
-| `delete_transit_network.yml`  | `roles.manage_transit_peered_networks` | Deletes AWS resources created in the `create_transit_network` playbook.                                                     |
-| `peer_to_transit_network.yml` | `roles.peer_transit_network`           | A playbook to execute the Transit Gateway peering operation in the role used.                                               |
-| `create_vm.yml`               | N/A                                    | Simple playbook to create an AWS VM.                                                                                        |
-| `delete_vm.yml`               | N/A                                    | Deletes the VM created in the `create_vm` playbook.                                                                         |
+| Name                          | Role(s) Used                                                         | Description                                                                                                                 |
+| ----------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `create_peer_network.yml`     | `lab.aws_infrastructure_config_demos.manage_direct_peered_networks`  | A playbook to create a multi-VPC peer network configuration with DMZ and private networks.                                  |
+| `delete_peer_network.yml`     | `lab.aws_infrastructure_config_demos.manage_direct_peered_networks`  | Deletes AWS resources created in the `create_peer_network` playbook.                                                        |
+| `peer_networks.yml`           | `lab.aws_infrastructure_config_demos.peer_networks`                  | Peer two or more VPCs with VPC peering.                                                                                     |
+| `create_transit_network.yml`  | `lab.aws_infrastructure_config_demos.manage_transit_peered_networks` | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks. |
+| `delete_transit_network.yml`  | `lab.aws_infrastructure_config_demos.manage_transit_peered_networks` | Deletes AWS resources created in the `create_transit_network` playbook.                                                     |
+| `peer_to_transit_network.yml` | `lab.aws_infrastructure_config_demos.peer_transit_network`           | A playbook to execute the Transit Gateway peering operation in the role used.                                               |
+| `create_vm.yml`               | N/A                                                                  | Simple playbook to create an AWS VM.                                                                                        |
+| `delete_vm.yml`               | N/A                                                                  | Deletes the VM created in the `create_vm` playbook.                                                                         |
 <!--end collection content-->
 
 #### VM Playbooks
 
-The `aws.infrastructure_config_demos.create_vm` and `aws.infrastructure_config_demos.delete_vm` playbooks demonstrate how you can construct automation to deploy AWS resources that have dependencies on others.  The more complex networking roles and playbooks automate building all of the resources, but these playbooks assume that you have existing infrastructure (VPCs, security groups, SSH keys, etc.) that you want to leverage to deploy the EC2 instance.  The command below shows how you can use Ansible Navigator to deploy the instance with variables being set both in var files and directly in the CLI.
+The `lab.aws_infrastructure_config_demos.create_vm` and `aws.infrastructure_config_demos.delete_vm` playbooks demonstrate how you can construct automation to deploy AWS resources that have dependencies on others.  The more complex networking roles and playbooks automate building all of the resources, but these playbooks assume that you have existing infrastructure (VPCs, security groups, SSH keys, etc.) that you want to leverage to deploy the EC2 instance.  The command below shows how you can use Ansible Navigator to deploy the instance with variables being set both in var files and directly in the CLI.
 
 ```yaml
-ansible-navigator run aws.infrastructure_config_demos.create_vm \
+ansible-navigator run lab.aws_infrastructure_config_demos.create_vm \
 --pae false \
 --mode stdout \
 --ee true \
@@ -61,7 +60,7 @@ ansible-navigator run aws.infrastructure_config_demos.create_vm \
 
 #### Create Network Playbooks
 
-The `aws.infrastructure_config_demos.create_peer_network` and `aws.infrastructure_config_demos.create_transit_network` playbooks have another tasks block that will attempt to configure the EC2 resources deployed by the roles a bit farther.  When the role completes, EC2 instances in the DMZ will still need to be configured with SSH configuration in order to communicate with EC2 instances in the private network(s).
+The `lab.aws_infrastructure_config_demos.create_peer_network` and `lab.aws_infrastructure_config_demos.create_transit_network` playbooks have another tasks block that will attempt to configure the EC2 resources deployed by the roles a bit farther.  When the role completes, EC2 instances in the DMZ will still need to be configured with SSH configuration in order to communicate with EC2 instances in the private network(s).
 
 To connect to the DMZ EC2 instance, the `ansible_ssh_private_key_file` variable needs to be set so that the machine running the playbook can connect to the newly created EC2 instance.  You may set this variable in any way that Ansible allows, i.e. extra var, host var, etc.  It must be set or the configuration step will be skipped.  The `ansible_ssh_user` variable is set automatically to the user `ec2-user` that is standard on AWS AMIs.
 

@@ -9,7 +9,7 @@
       "tag:owner": "{{ create_vm_vm_owner }}"
       "tag:purpose": "{{ create_vm_vm_purpose }}"
       "tag:ansible-role": create_vm
-      "tag:ansible-collection": aws.infrastructure_config_demos
+      "tag:ansible-collection": lab.aws_infrastructure_config_demos
       instance-state-name:
         - pending
         - running
@@ -86,7 +86,7 @@
           owner: "{{ create_vm_vm_owner }}"
           purpose: "{{ create_vm_vm_purpose }}"
           ansible-role: create_vm
-          ansible-collection: aws.infrastructure_config_demos
+          ansible-collection: lab.aws_infrastructure_config_demos
         wait: "{{ create_vm_aws_ec2_wait }}"
         vpc_subnet_id: "{{ create_vm_aws_subnet_id }}"
         user_data: "{{ lookup('template', create_vm_aws_userdata_template + '.j2', template_vars=dict(vm_name=create_vm_vm_name)) }}"
