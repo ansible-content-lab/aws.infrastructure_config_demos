@@ -1,0 +1,50 @@
+---
+- name: Delete a VPC and subnets
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  vars_files:
+    - vars/main.yml
+    - vars/create_vpc.yml
+  tasks:
+    - name: Get VPC
+      amazon.aws.ec2_vpc_net_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:purpose": demo
+          "tag:environment": aap
+      register: vpcs
+
+    - name: Get subnets
+      amazon.aws.ec2_vpc_subnet_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:purpose": demo
+          "tag:environment": aap
+      register: subnets
+
+    - name: Delete subnets
+      when:
+        - vpcs is defined
+        - vpcs.vpcs | length > 0
+        - subnets is defined
+        - subnets.subnets | length > 0
+      amazon.aws.ec2_vpc_subnet:
+        region: "{{ aws_region }}"
+        cidr: "{{ item.cidr_block }}"
+        vpc_id: "{{ vpcs.vpcs[0].id }}"
+        state: absent
+      loop: "{{ subnets.subnets }}"
+      register: deleted_subnets
+
+    - name: Delete VPC
+      when:
+        - vpcs is defined
+        - vpcs.vpcs | length > 0
+      amazon.aws.ec2_vpc_net:
+        region: "{{ aws_region }}"
+        vpc_id: "{{ item.vpc_id }}"
+        state: absent
+      loop: "{{ vpcs.vpcs }}"
+      register: deleted_vpcs

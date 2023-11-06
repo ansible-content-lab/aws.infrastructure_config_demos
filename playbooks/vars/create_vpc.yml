@@ -1,5 +1,4 @@
 ---
-region: us-east-1
 vpc_cidr: 172.16.0.0/22
 vpc_subnets:
   - name: vnet1

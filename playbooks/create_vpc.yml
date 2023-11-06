@@ -5,6 +5,7 @@
   gather_facts: false
   become: false
   vars_files:
+    - vars/main.yml
     - vars/create_vpc.yml
   tasks:
     - name: Create VPC
@@ -14,11 +15,11 @@
             name: vpc-demo
             cidr_block: "{{ vpc_cidr }}"
             purge_tags: false
-            region: "{{ region }}"
+            region: "{{ aws_region }}"
             state: present
             tags:
               Name: vpc-demo
-              purpose: ansible-automation-platform
+              purpose: demo
               environment: aap
           register: vpc
           tags:
@@ -37,12 +38,12 @@
           amazon.aws.ec2_vpc_subnet:
             vpc_id: "{{ vpc_id }}"
             cidr: "{{ item.cidr }}"
-            region: "{{ region }}"
+            region: "{{ aws_region }}"
             az: "{{ item.az }}"
             state: present
             tags:
               Name: "vpc-demo-subnet-{{ item.name }}"
-              purpose: ansible-automation-platform
+              purpose: demo
               environment: aap
           loop: "{{ vpc_subnets }}"
           register: subnets
