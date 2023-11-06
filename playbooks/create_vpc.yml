@@ -20,7 +20,6 @@
               Name: vpc-demo
               purpose: ansible-automation-platform
               environment: aap
-              deployment: "aap-infrastructure-{{ deployment_id }}"
           register: vpc
           tags:
             - network
