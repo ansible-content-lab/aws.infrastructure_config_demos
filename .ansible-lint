@@ -1,14 +1,21 @@
 ---
+profile: basic
+quiet: false
+verbosity: 1
+
 exclude_paths:
   - .cache/
   - .github/
   - test
+  - changelogs
 
 enable_list:
-  - empty-string-compare # opt-in
-  - no-log-password # opt-in
-  - no-same-owner # opt-in
+  - empty-string-compare
+  - no-log-password
+  - no-same-owner
+  - yaml
 
 skip_list:
-  - role-name[path]
-  - galaxy[no-changelog]
+  - package-latest
+  - yaml[line-length]
+  - var-naming[no-role-prefix]
