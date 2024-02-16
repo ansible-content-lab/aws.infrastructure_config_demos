@@ -1,0 +1,4 @@
+---
+release_summary: Added a role that deploys AWS infrastructure for quick automation mesh demos.
+major_changes:
+  - New automation mesh role.
