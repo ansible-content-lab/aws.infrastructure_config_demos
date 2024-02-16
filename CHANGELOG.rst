@@ -6,6 +6,19 @@ lab.azure.azure_infrastructure_config_demos Release Notes
 
 This changelog describes changes after version 2.0.0.
 
+v3.1.0
+======
+
+Release Summary
+---------------
+
+Added a role that deploys AWS infrastructure for quick automation mesh demos.
+
+Major Changes
+-------------
+
+- New automation mesh role.
+
 v3.0.0
 ======
 
