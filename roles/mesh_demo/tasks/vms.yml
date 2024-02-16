@@ -1,0 +1,48 @@
+---
+- name: Provision hop node VM
+  amazon.aws.ec2_instance:
+    count: 1
+    image:
+      id: "{{ mesh_demo_ami | trim }}"
+    instance_type: "{{ mesh_demo_hop_node_instance_type }}"
+    key_name: "{{ mesh_demo_ssh_key_name }}"
+    name: "{{ mesh_demo_hop_node_instance_name }}"
+    network:
+      assign_public_ip: true
+      delete_on_termination: true
+    region: "{{ mesh_demo_aws_region }}"
+    security_groups:
+      - "{{ dmz_sg.group_id }}"
+    state: running
+    tags:
+      deployment: ansible
+      purpose: hop-node
+      ansible-role: mesh_demo
+    tenancy: "{{ mesh_demo_tenancy }}"
+    vpc_subnet_id: "{{ mesh_demo_pub_subnet.subnet.id }}"
+    wait: true
+  register: hop_node
+
+- name: Provision execution node VM
+  amazon.aws.ec2_instance:
+    count: 1
+    image:
+      id: "{{ mesh_demo_ami | trim }}"
+    instance_type: "{{ mesh_demo_execution_node_instance_type }}"
+    key_name: "{{ mesh_demo_ssh_key_name }}"
+    name: "{{ mesh_demo_execution_node_instance_name }}"
+    network:
+      assign_public_ip: false
+      delete_on_termination: true
+    region: "{{ mesh_demo_aws_region }}"
+    security_groups:
+      - "{{ priv_network_sg.group_id }}"
+    state: running
+    tags:
+      deployment: ansible
+      purpose: execution-node
+      ansible-role: mesh_demo
+    tenancy: "{{ mesh_demo_tenancy }}"
+    vpc_subnet_id: "{{ mesh_demo_priv_subnet.subnet.id }}"
+    wait: true
+  register: hop_node

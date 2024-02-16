@@ -1,7 +1,7 @@
 ---
 namespace: lab
 name: aws_infrastructure_config_demos
-version: 3.0.0
+version: 3.1.0
 readme: README.md
 authors:
   - Scott Harwell <sharwell@redhat.com>

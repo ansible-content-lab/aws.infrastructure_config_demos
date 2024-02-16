@@ -1,0 +1,9 @@
+---
+- name: Deploy automation mesh demo
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Create automation mesh demo
+      ansible.builtin.include_role:
+        name: lab.aws_infrastructure_config_demos.mesh_demo

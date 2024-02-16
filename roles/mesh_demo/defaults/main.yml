@@ -1,0 +1,11 @@
+---
+mesh_demo_aws_region: us-east-1
+mesh_demo_tenancy: default
+mesh_demo_vpc_priv_net_cidr: 10.0.0.0/20
+mesh_demo_priv_subnet_cidr: 10.0.0.0/24
+mesh_demo_pub_subnet_cidr: 10.0.1.0/24
+mesh_demo_ssh_key_name: default_keypair
+mesh_demo_hop_node_instance_type: t2.small
+mesh_demo_hop_node_instance_name: hop_node
+mesh_demo_execution_node_instance_type: t2.small
+mesh_demo_execution_node_instance_name: execution_node

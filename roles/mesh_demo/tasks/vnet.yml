@@ -1,0 +1,159 @@
+---
+- name: Create VPC
+  amazon.aws.ec2_vpc_net:
+    name: automation-mesh-demo-vpc
+    cidr_block: "{{ mesh_demo_vpc_priv_net_cidr }}"
+    purge_tags: false
+    region: "{{ mesh_demo_aws_region }}"
+    tenancy: "{{ mesh_demo_tenancy }}"
+    state: present
+    tags:
+      deployment: ansible
+      ansible-role: mesh_demo
+  register: mesh_demo_vpc
+
+- name: Create private subnet
+  amazon.aws.ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ mesh_demo_vpc.vpc.id }}"
+    cidr: "{{ mesh_demo_priv_subnet_cidr }}"
+    region: "{{ mesh_demo_aws_region }}"
+    tags:
+      Name: private-subnet
+      deployment: ansible
+      ansible-role: mesh_demo
+  register: mesh_demo_priv_subnet
+
+- name: Create public subnet
+  amazon.aws.ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ mesh_demo_vpc.vpc.id }}"
+    cidr: "{{ mesh_demo_pub_subnet_cidr }}"
+    region: "{{ mesh_demo_aws_region }}"
+    tags:
+      Name: public-subnet
+      deployment: ansible
+      ansible-role: mesh_demo
+  register: mesh_demo_pub_subnet
+
+- name: Create Internet Gateway
+  amazon.aws.ec2_vpc_igw:
+    vpc_id: "{{ mesh_demo_vpc.vpc.id }}"
+    region: "{{ mesh_demo_aws_region }}"
+    state: present
+    tags:
+      Name: priv-network-ig
+      deployment: ansible
+      ansible-role: mesh_demo
+  register: mesh_demo_igw
+
+- name: Create NAT gateway and allocate EIP if a nat gateway does not yet exist in the subnet
+  amazon.aws.ec2_vpc_nat_gateway:
+    state: present
+    subnet_id: "{{ mesh_demo_pub_subnet.subnet.id }}"
+    wait: true
+    region: "{{ mesh_demo_aws_region }}"
+    if_exist_do_not_create: true
+    tags:
+      Name: priv-network-nat-gw
+      deployment: ansible
+      ansible-role: mesh_demo
+  register: mesh_demo_nat_gateway
+
+- name: Create pub network security group
+  amazon.aws.ec2_security_group:
+    name: mesh-demo-dmz-sg
+    description: DMZ security group
+    vpc_id: "{{ mesh_demo_vpc.vpc.id }}"
+    region: "{{ mesh_demo_aws_region }}"
+    rules:
+      - proto: tcp
+        ports:
+          - 22
+        cidr_ip: 0.0.0.0/0
+        rule_desc: allow all on port 22
+      - proto: tcp
+        cidr_ip: 0.0.0.0/0
+        from_port: 0
+        to_port: 27199
+        rule_desc: allow on port 27199 for automation mesh
+      - proto: icmp
+        cidr_ip: 10.0.0.0/8
+        from_port: -1
+        to_port: -1
+        rule_desc: allow all local network icmp traffic
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+        rule_desc: allow all outbound traffic
+    tags:
+      Name: mesh_demo-dmz-sg
+      deployment: ansible
+      ansible-role: mesh_demo
+  register: dmz_sg
+
+- name: Create priv network security group
+  amazon.aws.ec2_security_group:
+    name: mesh-demo-private-network-sg
+    description: Private network security group
+    vpc_id: "{{ mesh_demo_vpc.vpc.id }}"
+    region: "{{ mesh_demo_aws_region }}"
+    rules:
+      - proto: tcp
+        from_port: 0
+        to_port: 22
+        cidr_ip: 10.0.0.0/8
+        rule_desc: allow all ssh traffic in private networks
+      - proto: tcp
+        from_port: 0
+        to_port: 27199
+        cidr_ip: 10.0.0.0/8
+        rule_desc: allow all automation mesh traffic in private networks
+      - proto: icmp
+        from_port: -1
+        to_port: -1
+        cidr_ip: 10.0.0.0/8
+        rule_desc: allow all icmp traffic in private networks
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+        rule_desc: allow all outbound traffic
+    tags:
+      Name: mesh-demo-private-network-sg
+      deployment: ansible
+      ansible-role: mesh_demo
+  register: priv_network_sg
+
+- name: Setup public subnet route table
+  amazon.aws.ec2_vpc_route_table:
+    purge_tags: false
+    region: "{{ mesh_demo_aws_region }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ mesh_demo_igw.gateway_id }}"
+    subnets:
+      - "{{ mesh_demo_pub_subnet.subnet.id }}"
+    state: present
+    tags:
+      Name: mesh-demo-pub-subnet-rt
+      deployment: ansible
+      ansible-role: mesh_demo
+    vpc_id: "{{ mesh_demo_vpc.vpc.id }}"
+  register: pub_subnet_rt
+
+- name: Setup private subnet route table
+  amazon.aws.ec2_vpc_route_table:
+    purge_tags: false
+    region: "{{ mesh_demo_aws_region }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ mesh_demo_nat_gateway.nat_gateway_id }}"
+    subnets:
+      - "{{ mesh_demo_priv_subnet.subnet.id }}"
+    state: present
+    tags:
+      Name: mesh-demo-priv-subnet-rt
+      deployment: ansible
+      ansible-role: mesh_demo
+    vpc_id: "{{ mesh_demo_vpc.vpc.id }}"
+  register: priv_subnet_rt

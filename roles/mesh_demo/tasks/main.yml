@@ -1,0 +1,6 @@
+---
+- name: Include VNET Tasks
+  ansible.builtin.include_tasks: vnet.yml
+
+- name: Import VM Tasks
+  ansible.builtin.include_tasks: vms.yml

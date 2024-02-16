@@ -3,14 +3,23 @@ releases:
   3.0.0:
     changes:
       breaking_changes:
-        - Playbook names have changed.
-        - Playbook paths have changed.
-        - Playbooks now reference role by FQRN.
+      - Playbook names have changed.
+      - Playbook paths have changed.
+      - Playbooks now reference role by FQRN.
       major_changes:
-        - Moved playbooks into playbooks folder so that playbooks may be called from
-          `namespace.collection.playbook` syntax.
-        - Updated Ansible Lint config.
+      - Moved playbooks into playbooks folder so that playbooks may be called from
+        `namespace.collection.playbook` syntax.
+      - Updated Ansible Lint config.
       release_summary: Updated the collection to match validated patterns.
     fragments:
-      - version-3.yml
-    release_date: "2023-11-06"
+    - version-3.yml
+    release_date: '2023-11-06'
+  3.1.0:
+    changes:
+      major_changes:
+      - New automation mesh role.
+      release_summary: Added a role that deploys AWS infrastructure for quick automation
+        mesh demos.
+    fragments:
+    - 10-mesh-demo.yml
+    release_date: '2024-02-16'
