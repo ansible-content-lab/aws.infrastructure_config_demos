@@ -1,38 +1,46 @@
-Role Name
-=========
+# lab.aws_infrastructure_config_demos.mesh_demo
 
-A brief description of the role goes here.
+This role configures AWS infrastructure with a network and VM configuration that can be used for automation mesh demos including a public subnet, private subnet, hop node, and execution node; along with the dependent resources to allow networking traffic.
 
-Requirements
-------------
+## Role Variables
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+```yaml
+mesh_demo_aws_region: us-east-1
+mesh_demo_tenancy: default
+mesh_demo_vpc_priv_net_cidr: 10.0.0.0/20
+mesh_demo_priv_subnet_cidr: 10.0.0.0/24
+mesh_demo_pub_subnet_cidr: 10.0.1.0/24
+mesh_demo_ssh_key_name: default_keypair
+mesh_demo_hop_node_instance_type: t2.small
+mesh_demo_hop_node_instance_name: hop_node
+mesh_demo_execution_node_instance_type: t2.small
+mesh_demo_execution_node_instance_name: execution_node
+```
 
-Role Variables
---------------
+## Dependencies
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+### Collections
 
-Dependencies
-------------
+* `amazon.aws`
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Example Playbook
 
-Example Playbook
-----------------
+```yaml
+---
+- name: Deploy automation mesh demo
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Create automation mesh demo
+      ansible.builtin.include_role:
+        name: lab.aws_infrastructure_config_demos.mesh_demo
+```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+## License
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+GPLv3
 
-License
--------
+## Author Information
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Scott Harwell <sharwell@redhat.com>
